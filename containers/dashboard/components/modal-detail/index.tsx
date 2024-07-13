@@ -60,7 +60,7 @@ const ModalDetail = (props: IProps) => {
   };
   const isStateLoading = CURRENT_STEP === 'LOADING';
   const COLOR_SELECTED = selectColorStatus(CURRENT_STEP);
-
+  console.log(props.data?.processHistory);
   return (
     <Dialog open={Boolean(props.openCard)} onOpenChange={handleClose}>
       <DialogContent className='overflow-auto border-none rounded-none sm:max-w-2xl h-dvh'>
@@ -101,15 +101,16 @@ const ModalDetail = (props: IProps) => {
 
           <ul className='relative grid text-xs text-gray-100 rounded-lg gap-x-8 gap-y-2 bg-section md:text-lg'>
             {props.data &&
-              props.data.process_history
+              props.data.processHistory
                 ?.map((d, i) => {
+                  console.log(d);
                   return (
                     <li key={i} className='flex flex-col'>
                       <header className='flex justify-between'>
                         <code className='font-semibold text-left'>
                           {typeof d.step === 'number' && CATALOG_STEPS[d.step]}
                         </code>
-                        <code className='text-left '>Enviador: Pablo</code>
+                        {/* <code className='text-left '>Enviador: Pablo</code> */}
                       </header>
                       <div className='grid grid-cols-2 mx-4 gap-y-1'>
                         <div className='contents'>

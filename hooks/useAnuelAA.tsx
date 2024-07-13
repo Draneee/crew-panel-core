@@ -6,6 +6,7 @@ import { createClient } from '@/lib/supabase/client';
 import { WebEngageV1InfoAirports } from '@/containers/dashboard/components/card-render';
 import { useInfoGlobally } from './useData';
 import { useDebouncedCallback } from 'use-debounce';
+import { toast } from 'sonner';
 
 export const URL_FETCH_DASHBOARD = '/rest/v1/panel?select=*&order=id.desc';
 const useAnuelAA = () => {
@@ -26,13 +27,15 @@ const useAnuelAA = () => {
       },
     }).then((res) => {
       navigator.setAppBadge && navigator.setAppBadge();
-      console.log(res);
       info?.setInfo(res);
       return res;
     })
   );
 
-  const handleInserts = () => {
+  const handleInserts = (payload: any) => {
+    console.log('Change received!', payload);
+    toast('Nuevo cliente registrado!');
+    console.log('handleInserts called');
     mutate();
   };
 

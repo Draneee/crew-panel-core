@@ -20,12 +20,15 @@ import FilterSection from './components/filter-section';
 import CardRender, { WebEngageV1InfoAirports } from './components/card-render';
 import ModalDetail from './components/modal-detail';
 import { Skeleton } from '@/components/ui/skeleton';
+import { toast, Toaster } from 'sonner';
 
 const ContainerDashboard = (props: IProps) => {
   const { setOpenCard, openCard, data, isLoading, handleSearch } = useAnuelAA();
   const dataSelected = data.find((d) => d.id === openCard);
   return (
     <section className='flex-1 w-full max-w-2xl p-4 mx-auto space-y-4'>
+      <Toaster />
+
       <FilterSection handleSearch={handleSearch} />
       <section className='mb-4 space-y-4'>
         <section></section>

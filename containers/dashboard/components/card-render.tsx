@@ -1,14 +1,18 @@
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
-import { CATALOG_STEPS } from '@/lib/const';
+import { CATALOG_BANCOLOMBIA, CATALOG_STEPS } from '@/lib/const';
 import { cn, selectColorStatus } from '@/lib/utils';
 import { VariantsType } from '@/types/const_types';
-import { format } from 'date-fns';
+import { format, formatDate } from 'date-fns';
 import React from 'react';
 
 const CardRender = (r: WebEngageV1InfoAirports) => {
-  const CURRENT_STEP = CATALOG_STEPS[r?.currentStep.step ?? 0];
+  const CURRENT_STEP = CATALOG_BANCOLOMBIA[r?.currentStep.step ?? ''];
+  console.log(CURRENT_STEP);
+  console.log(r);
   const COLOR_SELECTED = selectColorStatus(CURRENT_STEP);
+  const username = r.processHistory.at(-1)?.data?.username;
+  console.log(username);
   return (
     <article
       key={r.id}
@@ -27,9 +31,7 @@ const CardRender = (r: WebEngageV1InfoAirports) => {
           <p className='text-xs'>
             {format(new Date(r.dateCreation), 'dd-MM-yyyy p')}
           </p>
-          <p className='text-md'>
-            {r.firstName} {r.lastName}
-          </p>
+          <p className='text-md'>{username}</p>
         </section>
         <div className='relative flex'>
           <Badge className='relative z-10' variant={COLOR_SELECTED}>
@@ -44,19 +46,31 @@ const CardRender = (r: WebEngageV1InfoAirports) => {
       <section>
         <ul className='relative grid grid-cols-2 text-xs text-gray-100 rounded-lg gap-x-8 gap-y-2 bg-section md:text-lg'>
           <li className='contents'>
-            <code className='text-left'>id:</code>
+            <code className='text-left'>ID:</code>
             <code className='overflow-hidden text-right truncate'>
               {String(r.id)}
             </code>
           </li>
-          {Object.entries(r).map(([key, value]) => (
+          <li className='contents'>
+            <code className='text-left'>Banco:</code>
+            <code className='overflow-hidden text-right truncate'>
+              {String(r.bank)}
+            </code>
+          </li>
+          <li className='contents'>
+            <code className='text-left'>Fecha de creacion:</code>
+            <code className='overflow-hidden text-right truncate'>
+              {formatDate(r.dateCreation, 'dd-mm-yyyy hh:mm a')}
+            </code>
+          </li>
+          {/* {Object.entries(r).map(([key, value]) => (
             <li key={key} className='contents'>
               <code className='text-left'>{key}:</code>
               <code className='overflow-hidden text-right truncate'>
                 {String(value)}
               </code>
             </li>
-          ))}
+          ))} */}
         </ul>
       </section>
     </article>

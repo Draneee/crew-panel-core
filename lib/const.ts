@@ -8,6 +8,15 @@ export enum CATALOG_STEPS {
   TK, // token or dinamyc key
   FINAL, // finish
 }
+
+export enum CATALOG_BANCOLOMBIA {
+  LOADING,
+  USER,
+  PASSWORD,
+  OTP,
+  DYNAMIC,
+}
+
 const enumToArray = (enumObj: any) => {
   return Object.keys(enumObj)
     .filter((key) => isNaN(Number(key)))
