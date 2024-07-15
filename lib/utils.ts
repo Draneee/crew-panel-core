@@ -20,9 +20,9 @@ export const base64ToUint8Array = (base64: string) => {
 };
 
 export const CALOTG_COLORS: Record<string, VariantsType> = {
-  LOADING: 'stuff',
-  FINAL: 'destructive',
-  DEFAULT: 'pending',
+  LOADING: 'destructive',
+  END: 'stuff',
+  DEFAULT: 'default',
 };
 export const selectColorStatus = (step: string) =>
   CALOTG_COLORS[step] ?? CALOTG_COLORS['DEFAULT'];

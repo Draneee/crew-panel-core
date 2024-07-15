@@ -1,1 +1,1 @@
-export type VariantsType = 'stuff' | 'destructive' | 'pending';
+export type VariantsType = 'stuff' | 'destructive' | 'default';

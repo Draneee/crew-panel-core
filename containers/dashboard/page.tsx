@@ -26,37 +26,40 @@ const ContainerDashboard = (props: IProps) => {
   const { setOpenCard, openCard, data, isLoading, handleSearch } = useAnuelAA();
   const dataSelected = data.find((d) => d.id === openCard);
   return (
-    <section className='flex-1 w-full max-w-2xl p-4 mx-auto space-y-4'>
-      <Toaster />
-
-      <FilterSection handleSearch={handleSearch} />
-      <section className='mb-4 space-y-4'>
-        <section></section>
-        {!isLoading ? (
-          data.map((r: WebEngageV1InfoAirports) => (
-            <CardRender
-              key={r.id}
-              {...{ ...r, data: dataSelected, setOpenCard }}
-            />
-          ))
-        ) : (
-          <section className='space-y-4 overflow-hidden'>
-            {Array.from({ length: 4 }, (_, i) => (
-              <Skeleton key={i} className='h-[200px] sm:h-[264px] '></Skeleton>
-            ))}
-          </section>
-        )}
+    <>
+      <section className='flex-1 w-full max-w-2xl p-4 mx-auto space-y-4'>
+        <FilterSection handleSearch={handleSearch} />
+        <section className='mb-4 space-y-4'>
+          {!isLoading ? (
+            data.map((r: WebEngageV1InfoAirports) => (
+              <CardRender
+                key={r.id}
+                {...{ ...r, data: dataSelected, setOpenCard }}
+              />
+            ))
+          ) : (
+            <section className='space-y-4 overflow-hidden'>
+              {Array.from({ length: 4 }, (_, i) => (
+                <Skeleton
+                  key={i}
+                  className='h-[200px] sm:h-[264px] '
+                ></Skeleton>
+              ))}
+            </section>
+          )}
+        </section>
+        <ModalNotifications />
+        <ModalDetail
+          {...{
+            data: dataSelected,
+            openCard,
+            setOpenCard,
+            ...props,
+          }}
+        />
       </section>
-      <ModalNotifications />
-      <ModalDetail
-        {...{
-          data: dataSelected,
-          openCard,
-          setOpenCard,
-          ...props,
-        }}
-      />
-    </section>
+      <Toaster />
+    </>
   );
 };
 

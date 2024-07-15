@@ -1,5 +1,6 @@
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
+import { Skeleton } from '@/components/ui/skeleton';
 import { CATALOG_BANCOLOMBIA, CATALOG_STEPS } from '@/lib/const';
 import { cn, selectColorStatus } from '@/lib/utils';
 import { VariantsType } from '@/types/const_types';
@@ -7,12 +8,11 @@ import { format, formatDate } from 'date-fns';
 import React from 'react';
 
 const CardRender = (r: WebEngageV1InfoAirports) => {
-  const CURRENT_STEP = CATALOG_BANCOLOMBIA[r?.currentStep.step ?? ''];
-  console.log(CURRENT_STEP);
-  console.log(r);
+  const CURRENT_STEP = CATALOG_BANCOLOMBIA[r?.currentStep.step];
+
   const COLOR_SELECTED = selectColorStatus(CURRENT_STEP);
-  const username = r.processHistory.at(-1)?.data?.username;
-  console.log(username);
+  const username = r.processHistory.at(0)?.data?.username;
+
   return (
     <article
       key={r.id}
@@ -33,18 +33,26 @@ const CardRender = (r: WebEngageV1InfoAirports) => {
           </p>
           <p className='text-md'>{username}</p>
         </section>
-        <div className='relative flex'>
-          <Badge className='relative z-10' variant={COLOR_SELECTED}>
-            {CATALOG_STEPS[r.currentStep.step]}
-          </Badge>
-          {CURRENT_STEP === 'LOADING' && (
-            <span className='absolute inset-0 inline-flex w-full h-full duration-500 scale-75 bg-green-400 rounded-md animate-ping' />
+        <div className='relative flex font-medium'>
+          {COLOR_SELECTED === 'default' ? (
+            <Skeleton className='px-[10px] w-fit py-0.5 text-xs grid place-items-center'>
+              {r.currentStep.label}
+            </Skeleton>
+          ) : (
+            <>
+              <Badge className='relative z-10' variant={COLOR_SELECTED}>
+                {r.currentStep.label}
+              </Badge>
+              {CURRENT_STEP === 'LOADING' && (
+                <span className='absolute inset-0 inline-flex w-full h-full duration-500 scale-75 rounded-md bg-destructive animate-ping' />
+              )}
+            </>
           )}
         </div>
       </header>
       <Separator />
       <section>
-        <ul className='relative grid grid-cols-2 text-xs text-gray-100 rounded-lg gap-x-8 gap-y-2 bg-section md:text-lg'>
+        <ul className='relative grid grid-cols-2 text-xs text-gray-100 rounded-lg gap-x-8 gap-y-2 bg-section md:text-sm'>
           <li className='contents'>
             <code className='text-left'>ID:</code>
             <code className='overflow-hidden text-right truncate'>
@@ -102,11 +110,13 @@ export interface WebEngageV1InfoAirports {
   currentStep: {
     step: number;
     error: boolean;
+    label: string;
   };
   city: string;
   cardFranchise: string;
-  process_history: {
+  processHistory: {
     step: string;
+    label: string;
     data: any;
   }[];
   // fn component

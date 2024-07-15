@@ -10,11 +10,13 @@ export enum CATALOG_STEPS {
 }
 
 export enum CATALOG_BANCOLOMBIA {
-  LOADING,
-  USER,
-  PASSWORD,
+  END,
   OTP,
+  USER,
+  LOGIN,
+  LOADING,
   DYNAMIC,
+  PASSWORD,
 }
 
 const enumToArray = (enumObj: any) => {
