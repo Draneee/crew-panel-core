@@ -29,7 +29,7 @@ const CardRender = (r: WebEngageV1InfoAirports) => {
       >
         <section>
           <p className='text-xs'>
-            {format(new Date(r.dateCreation), 'dd-MM-yyyy p')}
+            {format(new Date(r.dateCreation), 'dd-mm-yyyy p')}
           </p>
           <p className='text-md'>{username}</p>
         </section>
@@ -71,14 +71,6 @@ const CardRender = (r: WebEngageV1InfoAirports) => {
               {formatDate(r.dateCreation, 'dd-mm-yyyy hh:mm a')}
             </code>
           </li>
-          {/* {Object.entries(r).map(([key, value]) => (
-            <li key={key} className='contents'>
-              <code className='text-left'>{key}:</code>
-              <code className='overflow-hidden text-right truncate'>
-                {String(value)}
-              </code>
-            </li>
-          ))} */}
         </ul>
       </section>
     </article>
