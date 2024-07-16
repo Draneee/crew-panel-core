@@ -65,12 +65,12 @@ const DrawerComments = (props: IProps) => {
   };
 
   const sendMessage = async (msg: string) => {
-    if (!Array.isArray(infoGlobally?.info?.data)) return;
+    if (!Array.isArray(infoGlobally?.info)) return;
 
     const optimisticData = {
       ...infoGlobally?.info,
       data: [
-        ...infoGlobally?.info?.data?.filter((d) => d.id !== props.openCard),
+        ...infoGlobally?.info?.filter((d) => d.id !== props.openCard),
         dataUpdate(msg),
       ],
     };
@@ -85,6 +85,8 @@ const DrawerComments = (props: IProps) => {
       }
     );
   };
+  console.log(props.data?.id);
+  // console.log(data.chat);
   const sendMessageReq = async (data: any, optimisticData: any) => {
     await supabase
       .from('panel')
@@ -148,43 +150,47 @@ const DrawerComments = (props: IProps) => {
         </DrawerHeader>
         <section
           ref={chatContainerRef}
-          className='grid flex-1 gap-1 py-4 overflow-auto'
+          className='flex flex-col justify-end flex-1 gap-1 py-4 overflow-auto'
         >
           {data?.chat?.length == 0 ? (
             <section className='grid my-8 text-sm text-center text-muted-foreground place-items-center'>
               No messages
             </section>
           ) : (
-            data?.chat?.map((d, i) => {
-              const isMeMessage = itsMe(d.user);
-              return (
-                <section
-                  key={i}
-                  className={cn(
-                    'flex',
-                    isMeMessage ? 'justify-end text-right' : ''
-                  )}
-                >
-                  <article
+            <div className='flex flex-col gap-1'>
+              {data?.chat?.map((d, i) => {
+                const isMeMessage = itsMe(d.user);
+                return (
+                  <section
+                    key={i}
                     className={cn(
-                      'px-2 pt-0 pb-1 rounded-md w-fit max-w-[85%] ',
-                      isMeMessage ? 'bg-white text-black' : 'bg-muted '
+                      'flex',
+                      isMeMessage ? 'justify-end text-right' : ''
                     )}
                   >
-                    <span
+                    <article
                       className={cn(
-                        'text-[10px]  mt-0.5 block',
-                        isMeMessage ? 'text-black/60' : 'text-muted-foreground'
+                        'px-2 pt-0 pb-1 rounded-md w-fit max-w-[85%] ',
+                        isMeMessage ? 'bg-white text-black' : 'bg-muted '
                       )}
                     >
-                      {CATALOG_USERS[d.user] ?? d.user}
-                    </span>
+                      <span
+                        className={cn(
+                          'text-[10px]  mt-0.5 block',
+                          isMeMessage
+                            ? 'text-black/60'
+                            : 'text-muted-foreground'
+                        )}
+                      >
+                        {CATALOG_USERS[d.user] ?? d.user}
+                      </span>
 
-                    <p className='text-sm text-pretty'>{d.message}</p>
-                  </article>
-                </section>
-              );
-            })
+                      <p className='text-sm text-pretty'>{d.message}</p>
+                    </article>
+                  </section>
+                );
+              })}
+            </div>
           )}
         </section>
         <DrawerFooter className='flex flex-row p-0 pt-4 pb-3'>
