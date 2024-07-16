@@ -148,16 +148,16 @@ const DrawerComments = (props: IProps) => {
         <DrawerHeader>
           <DrawerTitle>Inbox Chat #{data?.id}</DrawerTitle>
         </DrawerHeader>
-        <section
-          ref={chatContainerRef}
-          className='flex flex-col justify-end flex-1 gap-1 py-4 overflow-auto'
-        >
+        <section className='flex flex-col justify-end flex-1 gap-1 py-4 overflow-auto'>
           {data?.chat?.length == 0 ? (
             <section className='grid my-8 text-sm text-center text-muted-foreground place-items-center'>
               No messages
             </section>
           ) : (
-            <div className='flex flex-col gap-1'>
+            <div
+              className='flex flex-col gap-1 pb-1 overflow-auto pe-1'
+              ref={chatContainerRef}
+            >
               {data?.chat?.map((d, i) => {
                 const isMeMessage = itsMe(d.user);
                 return (
