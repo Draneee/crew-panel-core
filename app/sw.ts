@@ -30,6 +30,8 @@ self.addEventListener('push', (event) => {
       .showNotification(data.title, {
         body: data.message,
         icon: '/icons/icon-512x512.png',
+        //@ts-ignore
+        sound: './alert.mp3',
       })
       .then(() => {
         ++count;
