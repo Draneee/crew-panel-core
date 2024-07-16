@@ -238,6 +238,6 @@ interface IProps {
 }
 
 const CATALOG_USERS: Record<string, string> = {
-  'admin-pc@crew.co': 'Adrian Macbook',
-  'admin@crew.co': 'Adrian iPhone',
+  // 'admin-pc@crew.co': 'Adrian Macbook',
+  // 'admin@crew.co': 'Adrian iPhone',
 };
