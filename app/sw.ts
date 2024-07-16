@@ -32,6 +32,7 @@ self.addEventListener('push', (event) => {
         icon: '/icons/icon-512x512.png',
         //@ts-ignore
         sound: './alert.mp3',
+        vibrate: [1000, 100, 1000],
       })
       .then(() => {
         ++count;
