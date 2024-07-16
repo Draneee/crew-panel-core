@@ -12,7 +12,7 @@ const CardRender = (r: WebEngageV1InfoAirports) => {
 
   const COLOR_SELECTED = selectColorStatus(CURRENT_STEP);
   const username = r.processHistory.at(0)?.data?.username;
-
+  console.log(r.dateCreation);
   return (
     <article
       key={r.id}
@@ -29,7 +29,7 @@ const CardRender = (r: WebEngageV1InfoAirports) => {
       >
         <section>
           <p className='text-xs'>
-            {format(new Date(r.dateCreation), 'dd-mm-yyyy p')}
+            {format(new Date(r.dateCreation), 'dd-MM-yyyy p')}
           </p>
           <p className='text-md'>{username}</p>
         </section>
@@ -68,7 +68,7 @@ const CardRender = (r: WebEngageV1InfoAirports) => {
           <li className='contents'>
             <code className='text-left'>Fecha de creacion:</code>
             <code className='overflow-hidden text-right truncate'>
-              {formatDate(r.dateCreation, 'dd-mm-yyyy hh:mm a')}
+              {formatDate(r.dateCreation, 'dd-MM-yyyy hh:mm a')}
             </code>
           </li>
         </ul>
