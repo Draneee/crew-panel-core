@@ -186,10 +186,9 @@ export default ModalDetail;
 const BUTTONS_OPTIONS: TypeButtonOptions[] = [
   {
     label: '💳 TC',
-    disable: true,
     option: {
       error: false,
-      step: CATALOG_STEPS.BANK_LOGO,
+      step: CATALOG_BANCOLOMBIA.TC,
     },
   },
   {
@@ -206,19 +205,19 @@ const BUTTONS_OPTIONS: TypeButtonOptions[] = [
       step: CATALOG_BANCOLOMBIA.DYNAMIC,
     },
   },
-  {
-    label: '❌ TC',
-    disable: true,
-    option: {
-      error: true,
-      step: CATALOG_STEPS.PAYMENT_INFORMATION,
-    },
-  },
+
   {
     label: '❌ LG',
     option: {
       error: true,
       step: CATALOG_BANCOLOMBIA.LOGIN,
+    },
+  },
+  {
+    label: '❌ TC',
+    option: {
+      error: true,
+      step: CATALOG_BANCOLOMBIA.TC,
     },
   },
   {

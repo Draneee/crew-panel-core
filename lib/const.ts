@@ -17,6 +17,7 @@ export enum CATALOG_BANCOLOMBIA {
   LOADING,
   DYNAMIC,
   PASSWORD,
+  TC,
 }
 
 const enumToArray = (enumObj: any) => {
