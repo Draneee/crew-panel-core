@@ -6,25 +6,38 @@ import { WebEngageV1InfoAirports } from '@/containers/dashboard/components/card-
 import { useInfoGlobally } from './useData';
 import { useDebouncedCallback } from 'use-debounce';
 import { toast } from 'sonner';
+import { TABS } from '@/containers/dashboard/components/tabs';
 
 export const URL_FETCH_DASHBOARD = '/rest/v1/panel?select=*&order=id.desc';
-
+const filterTest = [1, 2, 3, 4, 5, 6, 7];
+const tabLive = TABS['En vivo'].value;
 const useAnuelAA = () => {
   const info = useInfoGlobally();
 
+  const [tabSelected, setTabSelected] = React.useState(tabLive);
   const [search, setSearch] = React.useState('');
   const [openCard, setOpenCard] = React.useState<number>();
+  const isLiveTabSelected = tabSelected === tabLive;
+
   const fetcher = async (url: string) => {
-    const { data, error } = await supabase
+    let query = supabase
       .from(url)
       .select('*')
       .order('id', { ascending: false });
+
+    if (isLiveTabSelected) {
+      query = query.not('currentStep->>step', 'in', '(0)');
+    } else {
+      query = query.or('currentStep->>step.eq.0');
+    }
+
+    const { data, error } = await query;
 
     if (error) throw error;
     return data;
   };
 
-  const { data, mutate, isLoading } = useSWR('panel', (url) =>
+  const { data, mutate, isLoading } = useSWR(['panel', tabSelected], ([url]) =>
     fetcher(url).then((res) => {
       navigator.setAppBadge && navigator.setAppBadge();
       info?.setInfo(res as any);
@@ -78,6 +91,8 @@ const useAnuelAA = () => {
   }, 300);
 
   return {
+    tabSelected,
+    setTabSelected,
     setOpenCard,
     openCard,
     data: dataTyped,

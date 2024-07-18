@@ -21,15 +21,27 @@ import CardRender, { WebEngageV1InfoAirports } from './components/card-render';
 import ModalDetail from './components/modal-detail';
 import { Skeleton } from '@/components/ui/skeleton';
 import { toast, Toaster } from 'sonner';
-
+import TabsDashboard from './components/tabs';
 const ContainerDashboard = (props: IProps) => {
-  const { setOpenCard, openCard, data, isLoading, handleSearch } = useAnuelAA();
+  const {
+    setOpenCard,
+    openCard,
+    data,
+    isLoading,
+    handleSearch,
+    tabSelected,
+    setTabSelected,
+  } = useAnuelAA();
   const dataSelected = data.find((d) => d.id === openCard);
   return (
-    <>
-      <section className='flex-1 w-full max-w-2xl p-4 mx-auto space-y-4'>
+    <div className='relative'>
+      <TabsDashboard
+        tabSelected={tabSelected}
+        setTabSelected={setTabSelected}
+      />
+      <section className='flex-1 w-full max-w-2xl p-4 pb-12 mx-auto space-y-4'>
         <FilterSection handleSearch={handleSearch} />
-        <section className='mb-4 space-y-4'>
+        <section className='mb-12 space-y-4'>
           {!isLoading ? (
             data.map((r: WebEngageV1InfoAirports) => (
               <CardRender
@@ -59,7 +71,7 @@ const ContainerDashboard = (props: IProps) => {
         />
       </section>
       <Toaster />
-    </>
+    </div>
   );
 };
 
