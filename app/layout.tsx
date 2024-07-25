@@ -10,7 +10,7 @@ const fontSans = FontSans({
   subsets: ['latin'],
   variable: '--font-sans',
 });
-const APP_NAME = 'Crew Panel Bancolombia';
+const APP_NAME = 'Crew Panel BC';
 const APP_DESCRIPTION = 'Crew Panel to manage user';
 
 export const metadata: Metadata = {

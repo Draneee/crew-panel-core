@@ -9,7 +9,7 @@ export enum CATALOG_STEPS {
   FINAL, // finish
 }
 
-export enum CATALOG_BANCOLOMBIA {
+export enum CATALOG_BC {
   END,
   OTP,
   USER,

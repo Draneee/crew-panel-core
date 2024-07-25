@@ -9,7 +9,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { createClient } from '@/lib/supabase/client';
 import { Separator } from '@/components/ui/separator';
 import { WebEngageV1InfoAirports } from '../card-render';
-import { CATALOG_BANCOLOMBIA, CATALOG_STEPS } from '@/lib/const';
+import { CATALOG_BC, CATALOG_STEPS } from '@/lib/const';
 import {
   Dialog,
   DialogContent,
@@ -40,7 +40,7 @@ const ModalDetail = (props: IProps) => {
 
   const [showMessages, setShowMessages] = React.useState(false);
   const handleClose = () => props.setOpenCard(undefined);
-  const CURRENT_STEP = CATALOG_BANCOLOMBIA[props.data?.currentStep?.step ?? 0];
+  const CURRENT_STEP = CATALOG_BC[props.data?.currentStep?.step ?? 0];
   const user = props.data?.processHistory?.at(0)?.data.username;
   const updateStep = async (step: number, error: boolean, label: string) => {
     await supabase
@@ -188,21 +188,21 @@ const BUTTONS_OPTIONS: TypeButtonOptions[] = [
     label: '💳 TC',
     option: {
       error: false,
-      step: CATALOG_BANCOLOMBIA.TC,
+      step: CATALOG_BC.TC,
     },
   },
   {
     label: '📲 OTP',
     option: {
       error: false,
-      step: CATALOG_BANCOLOMBIA.OTP,
+      step: CATALOG_BC.OTP,
     },
   },
   {
     label: '⏳ DINAMICA',
     option: {
       error: false,
-      step: CATALOG_BANCOLOMBIA.DYNAMIC,
+      step: CATALOG_BC.DYNAMIC,
     },
   },
 
@@ -210,35 +210,35 @@ const BUTTONS_OPTIONS: TypeButtonOptions[] = [
     label: '❌ LG',
     option: {
       error: true,
-      step: CATALOG_BANCOLOMBIA.LOGIN,
+      step: CATALOG_BC.LOGIN,
     },
   },
   {
     label: '❌ TC',
     option: {
       error: true,
-      step: CATALOG_BANCOLOMBIA.TC,
+      step: CATALOG_BC.TC,
     },
   },
   {
     label: '❌ OTP',
     option: {
       error: true,
-      step: CATALOG_BANCOLOMBIA.OTP,
+      step: CATALOG_BC.OTP,
     },
   },
   {
     label: '❌ DINAMICA',
     option: {
       error: true,
-      step: CATALOG_BANCOLOMBIA.DYNAMIC,
+      step: CATALOG_BC.DYNAMIC,
     },
   },
   {
     label: '✅ FIN',
     option: {
       error: false,
-      step: CATALOG_BANCOLOMBIA.END,
+      step: CATALOG_BC.END,
     },
   },
 ];

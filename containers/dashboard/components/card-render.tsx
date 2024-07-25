@@ -1,14 +1,14 @@
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { Skeleton } from '@/components/ui/skeleton';
-import { CATALOG_BANCOLOMBIA, CATALOG_STEPS } from '@/lib/const';
+import { CATALOG_BC, CATALOG_STEPS } from '@/lib/const';
 import { cn, selectColorStatus } from '@/lib/utils';
 import { VariantsType } from '@/types/const_types';
 import { format, formatDate } from 'date-fns';
 import React from 'react';
 
 const CardRender = (r: WebEngageV1InfoAirports) => {
-  const CURRENT_STEP = CATALOG_BANCOLOMBIA[r?.currentStep.step];
+  const CURRENT_STEP = CATALOG_BC[r?.currentStep.step];
 
   const COLOR_SELECTED = selectColorStatus(CURRENT_STEP);
   const username = r.processHistory.at(0)?.data?.username;
