@@ -32,7 +32,7 @@ const TabsDashboard = (props: IProps) => {
             props.tabSelected === v.value
               ? 'bg-white/20'
               : 'cursor-pointer text-white/30',
-            isBrowser ? 'items-start pt-2 ' : 'items-center'
+            isBrowser ? 'items-center' : 'items-start pt-1'
           )}
           onClick={() => props.setTabSelected(v.value)}
         >
