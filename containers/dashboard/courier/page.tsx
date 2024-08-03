@@ -80,7 +80,11 @@ const CourierContainer = () => {
             open={isOpenModalSendMesage}
           >
             <DialogTrigger asChild>
-              <Button size={'sm'} variant={'secondary'}>
+              <Button
+                size={'sm'}
+                variant={'secondary'}
+                disabled={disabledButton}
+              >
                 {' '}
                 Enviar mensaje
               </Button>
