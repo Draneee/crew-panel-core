@@ -269,20 +269,14 @@ const sendRequest = async (
 ) => {
   try {
     let personalizedMsg = msg;
+    const nameParsed = capitalizeFirstLetter(name.split(' ')[0]);
     if (personalizedMsg.includes('{name}'))
-      personalizedMsg = personalizedMsg.replace(
-        '{name}',
-        capitalizeFirstLetter(name.split(' ')[0])
-      );
-    console.log(msg.includes('{name}'));
-    console.log(name);
-    console.log(personalizedMsg);
-
+      personalizedMsg = personalizedMsg.replace('{name}', nameParsed);
     if (personalizedMsg.includes('{url}')) {
-      const { short_url } = await createShortURL(capitalizeFirstLetter(name));
+      const { short_url } = await createShortURL(nameParsed);
       const parsedUrl = short_url.split('https://').pop();
 
-      personalizedMsg.replace('{url}', parsedUrl);
+      personalizedMsg = personalizedMsg.replace('{url}', parsedUrl);
     }
 
     await customSendSMS(personalizedMsg, phone);
