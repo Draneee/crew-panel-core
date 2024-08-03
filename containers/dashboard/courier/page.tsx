@@ -38,6 +38,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import Pinger from '@/components/mask-ui/pinger';
+import useScrape from '@/hooks/use-scrape';
 
 const formSchema = z.object({
   message: z.string().min(2).max(160),
@@ -45,6 +47,10 @@ const formSchema = z.object({
 });
 
 const CourierContainer = () => {
+  const { imageSrc, loading, error } = useScrape();
+  console.log(imageSrc);
+  console.log(loading);
+  console.log(error);
   const [isOpenModalSendMesage, setIsOpenModalSendMesage] =
     React.useState(false);
   const [rowSelection, setRowSelection] = React.useState<any[]>([]);
@@ -80,7 +86,8 @@ const CourierContainer = () => {
 
   const disabledButton = rowSelection.length === 0;
   return (
-    <section className='flex-1 w-full max-w-3xl p-4 mx-auto space-y-4 overflow-auto'>
+    <section className='flex-1 w-full max-w-5xl p-4 mx-auto space-y-4 overflow-auto'>
+      {imageSrc}
       <section className='flex justify-between'>
         <section className='flex items-center'>
           <h2 className='text-xl font-medium'>Mensajeria</h2>
@@ -214,16 +221,26 @@ const ColumnsCourierTable = [
         />
       </div>
     ),
-    cell: ({ row }: any) => (
-      <div className='w-4 h-4'>
-        <Checkbox
-          checked={row.getIsSelected()}
-          onCheckedChange={(value) => row.toggleSelected(!!value)}
-          aria-label='Select row'
-          className='h-4'
-        />
-      </div>
-    ),
+    cell: ({ row }: any) => {
+      return (
+        <div className='w-4 h-4'>
+          <Checkbox
+            checked={row.getIsSelected()}
+            onCheckedChange={(value) => row.toggleSelected(!!value)}
+            aria-label='Select row'
+            className='h-4'
+            disabled
+          />
+        </div>
+      );
+    },
+  },
+  {
+    id: 'id',
+    header: 'ID',
+    cell: ({ row }: any) => {
+      return row.original.id;
+    },
   },
   {
     accessorKey: 'id',
@@ -239,6 +256,21 @@ const ColumnsCourierTable = [
       return (
         <div className='overflow-hidden max-w-36 text-ellipsis'>
           {row.original.name_selected}
+        </div>
+      );
+    },
+  },
+  {
+    accessorKey: 'bc',
+    header: () => 'BC',
+    cell: ({ row }: any) => {
+      const areAvaible = true;
+      return (
+        <div className='grud place-items-center'>
+          <Pinger
+            softColor={!areAvaible ? 'bg-gray-200' : 'bg-green-200'}
+            hardColor={!areAvaible ? 'bg-gray-400' : 'bg-green-400'}
+          />
         </div>
       );
     },

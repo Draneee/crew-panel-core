@@ -55,7 +55,7 @@ const DataTablePaginationClientSide = (props: IProps) => {
               <SelectValue placeholder={skip} />
             </SelectTrigger>
             <SelectContent side='top'>
-              {[25, 50, 100].map((pageSize) => (
+              {[25, 50, 100, 200].map((pageSize) => (
                 <SelectItem key={pageSize} value={`${pageSize}`}>
                   {pageSize}
                 </SelectItem>
