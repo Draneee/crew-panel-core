@@ -85,7 +85,7 @@ export function Uploadcsv() {
         }
       };
 
-      // await processNumbers(cleanedData);
+      await processNumbers(cleanedData);
     };
     reader.readAsText(selectedFile);
   };
