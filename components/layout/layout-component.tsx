@@ -22,10 +22,10 @@ const LayoutComponent = ({
       <AppShellSidebar width='280px'>
         <Sidebar />
       </AppShellSidebar>
-      <main className='w-full'>
+      <main className='flex flex-col w-full'>
         <Searchbar />
         <AppShellContent>
-          <section className='overflow-auto h-dvh'>
+          <section className='overflow-auto'>
             <div className='relative overflow-auto'>{children}</div>
           </section>
         </AppShellContent>

@@ -88,5 +88,5 @@ export const AppShellSidebar = (
 };
 
 export const AppShellContent = (props: PropsWithChildren) => {
-  return <div className='h-full grow'>{props.children}</div>;
+  return <div className='flex-1 overflow-auto'>{props.children}</div>;
 };

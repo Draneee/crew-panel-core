@@ -69,7 +69,7 @@ const CourierContainer = () => {
 
   const disabledButton = rowSelection.length === 0;
   return (
-    <section className='flex-1 w-full max-w-3xl p-4 pb-12 mx-auto space-y-4 overflow-auto'>
+    <section className='flex-1 w-full max-w-3xl p-4 mx-auto space-y-4 overflow-auto'>
       <section className='flex justify-between'>
         <section className='flex items-center'>
           <h2 className='text-xl font-medium'>Mensajeria</h2>
