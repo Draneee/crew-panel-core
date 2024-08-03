@@ -1,4 +1,5 @@
 import { Uploadcsv } from '@/components/\u0017upload-csv';
+import { useAppShell } from '@/components/layout/AppShell';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -9,10 +10,18 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
+import React from 'react';
 
 const UploadClients = () => {
+  const { toggleSidebar, isSidebarCollapsed } = useAppShell();
+
+  const [openModal, setOpenModal] = React.useState(false);
+  const handleOpenChange = (p: boolean) => {
+    setOpenModal(p);
+    if (!isSidebarCollapsed) toggleSidebar();
+  };
   return (
-    <Dialog>
+    <Dialog onOpenChange={handleOpenChange} open={openModal}>
       <DialogTrigger asChild>
         <Button size={'sm'}>Subir clientes</Button>
       </DialogTrigger>

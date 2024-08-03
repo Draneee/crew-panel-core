@@ -13,6 +13,7 @@ import React from 'react';
 const SendMessage = () => {
   const { toggleSidebar, isSidebarCollapsed } = useAppShell();
 
+  console.log(isSidebarCollapsed);
   const [openModal, setOpenModal] = React.useState(false);
   const handleOpenChange = () => {
     setOpenModal((p) => !p);
@@ -20,10 +21,11 @@ const SendMessage = () => {
       toggleSidebar();
     }
   };
+
   return (
     <Dialog onOpenChange={handleOpenChange} open={openModal}>
       <DialogTrigger asChild>
-        <Button size={'sm'}> Enviar mensaje</Button>
+        <Button size={'sm'}>eEnviar mensaje</Button>
       </DialogTrigger>
       <DialogContent className='sm:max-w-[425px]'>
         <DialogHeader>
