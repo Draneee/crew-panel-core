@@ -104,6 +104,8 @@ export function Uploadcsv() {
     number: string;
     name_source: string;
   }) => {
+    console.log(number);
+    console.log(name_source);
     return await fetch(`${API_URL_CHECK_NUMBER}/gtc/find/57${number}`, {
       method: 'GET',
     })
