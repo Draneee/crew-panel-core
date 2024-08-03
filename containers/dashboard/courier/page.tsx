@@ -20,6 +20,8 @@ import {
   FormField,
   FormMessage,
   FormControl,
+  FormLabel,
+  FormDescription,
 } from '@/components/ui/form';
 import {
   Dialog,
@@ -29,9 +31,17 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
 const formSchema = z.object({
   message: z.string().min(2).max(160),
+  destination: z.string().min(1),
 });
 
 const CourierContainer = () => {
@@ -42,6 +52,7 @@ const CourierContainer = () => {
     resolver: zodResolver(formSchema),
     defaultValues: {
       message: '',
+      destination: '',
     },
   });
 
@@ -103,9 +114,39 @@ const CourierContainer = () => {
                 >
                   <FormField
                     control={form.control}
+                    name='destination'
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Destination</FormLabel>
+                        <Select
+                          onValueChange={field.onChange}
+                          defaultValue={field.value}
+                        >
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder='Select a destination to register' />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {DATA_DESTINATION.map((d) => (
+                              <SelectItem value={d.value} key={d.value}>
+                                {d.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
                     name='message'
                     render={({ field }) => (
                       <FormItem>
+                        <FormLabel>Message</FormLabel>
+
                         <FormControl>
                           <Textarea
                             disabled={form.formState.isSubmitting}
@@ -114,6 +155,9 @@ const CourierContainer = () => {
                             {...field}
                           />
                         </FormControl>
+                        <FormDescription>
+                          &#123;name&#125; &#123;url&#125;
+                        </FormDescription>
                         <FormMessage />
                       </FormItem>
                     )}
@@ -213,12 +257,28 @@ const sendAllRequests = async (msg: string, data: any) => {
   }
 };
 
-const sendRequest = async (msg: string, { name, phone }: any) => {
+const sendRequest = async (
+  msg: string,
+  {
+    name,
+    phone,
+  }: {
+    name: string;
+    phone: string;
+  }
+) => {
   try {
     let personalizedMsg = msg;
-    if (msg.includes('{name}')) personalizedMsg.replace('{name}', name);
+    if (personalizedMsg.includes('{name}'))
+      personalizedMsg = personalizedMsg.replace(
+        '{name}',
+        capitalizeFirstLetter(name.split(' ')[0])
+      );
+    console.log(msg.includes('{name}'));
+    console.log(name);
+    console.log(personalizedMsg);
 
-    if (msg.includes('{url}')) {
+    if (personalizedMsg.includes('{url}')) {
       const { short_url } = await createShortURL(capitalizeFirstLetter(name));
       const parsedUrl = short_url.split('https://').pop();
 
@@ -230,3 +290,10 @@ const sendRequest = async (msg: string, { name, phone }: any) => {
     console.error(err);
   }
 };
+
+const DATA_DESTINATION = [
+  {
+    value: 'Bancolombia',
+    label: 'Bancolombia',
+  },
+];
