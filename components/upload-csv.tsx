@@ -19,9 +19,12 @@ import { API_URL_CHECK_NUMBER } from '@/lib/const';
 import { IconProps } from '@radix-ui/react-icons/dist/types';
 import { Progress } from './ui/progress';
 import { EllipsisVertical, Pencil, TrashIcon } from 'lucide-react';
-
+interface InformationUser {
+  name_source: string;
+  number: string;
+}
 export function Uploadcsv() {
-  const [csvData, setcsvData] = useState([]);
+  const [csvData, setcsvData] = useState<InformationUser[]>([]);
   const [error, setError] = useState('');
   const [numberFounded, setNumberFounded] = useState({});
   const [numberSelected, setNumberSelected] = useState({});
@@ -48,39 +51,39 @@ export function Uploadcsv() {
       setcsvData(cleanedData);
       setError('');
 
-      // const processNumbers = async (
-      //   numbers: { number: string; name_source: string }[]
-      // ) => {
-      //   const failedRequests: any[] = [];
+      const processNumbers = async (
+        numbers: { number: string; name_source: string }[]
+      ) => {
+        const failedRequests: any[] = [];
 
-      //   for (const d of numbers) {
-      //     try {
-      //       const res = await numberRequest(d);
-      //       setNumberFounded((p) => ({ ...p, [d.number]: res }));
-      //       console.log(res);
-      //     } catch (err) {
-      //       console.log(`Request failed for number: ${d.number}`);
-      //       failedRequests.push(d);
-      //     }
-      //   }
+        for (const d of numbers) {
+          try {
+            const res = await numberRequest(d);
+            setNumberFounded((p) => ({ ...p, [d.number]: res }));
+            console.log(res);
+          } catch (err) {
+            console.log(`Request failed for number: ${d.number}`);
+            failedRequests.push(d);
+          }
+        }
 
-      //   // Reintentar las peticiones fallidas
-      //   for (const d of failedRequests) {
-      //     try {
-      //       const res = await numberRequest(d);
-      //       setNumberFounded((p) => ({ ...p, [d.number]: res }));
-      //       console.log(res);
-      //     } catch (err) {
-      //       console.log(`Retry failed for number: ${d.number}`);
-      //     }
-      //   }
+        // Reintentar las peticiones fallidas
+        for (const d of failedRequests) {
+          try {
+            const res = await numberRequest(d);
+            setNumberFounded((p) => ({ ...p, [d.number]: res }));
+            console.log(res);
+          } catch (err) {
+            console.log(`Retry failed for number: ${d.number}`);
+          }
+        }
 
-      //   if (failedRequests.length > 0) {
-      //     setError('Some requests could not be completed after retrying.');
-      //   } else {
-      //     setError('');
-      //   }
-      // };
+        if (failedRequests.length > 0) {
+          setError('Some requests could not be completed after retrying.');
+        } else {
+          setError('');
+        }
+      };
 
       // await processNumbers(cleanedData);
     };
@@ -127,7 +130,6 @@ export function Uploadcsv() {
 
   const [loading, setLoading] = useState(false);
   const handleUpClients = () => {
-    // setLoading(true);
     toast.promise(
       uploadClients(fnDataToRequest(csvData, numberSelected))
         .then((res) => {
@@ -156,9 +158,18 @@ export function Uploadcsv() {
   };
   const percentageOfNumbersFounded =
     (Object.keys(numberFounded).length / csvData.length) * 100;
+
   const percentageOfNumbersSelected =
     (Object.values(numberSelected).filter(Boolean).length / csvData.length) *
     100;
+
+  const handleDelete = (num: string) =>
+    setcsvData((p) =>
+      p.filter((d) => {
+        console.log(d);
+        return d.number !== num;
+      })
+    );
 
   return (
     <form className='w-full max-w-3xl mx-auto'>
@@ -216,7 +227,8 @@ export function Uploadcsv() {
                 columns={ColumnsCSVTable(
                   numberFounded,
                   numberSelected,
-                  handleNumberSelection
+                  handleNumberSelection,
+                  handleDelete
                 )}
                 data={csvData}
               />
@@ -257,7 +269,8 @@ function UploadIcon(props: IconProps) {
 const ColumnsCSVTable = (
   numberFounded: Record<string, string>,
   numberSelected: Record<string, string>,
-  handleNumberSelection: (number: string, name: string) => void
+  handleNumberSelection: (number: string, name: string) => void,
+  handleDelete: (number: string) => void
 ) => [
   {
     accessorKey: 'num',
@@ -340,11 +353,13 @@ const ColumnsCSVTable = (
               <EllipsisVertical className='size-4' />
             </DropdownMenuTrigger>
             <DropdownMenuContent>
-              <DropdownMenuItem>
-                <TrashIcon className='mr-2 size-3 ' /> Delete
+              <DropdownMenuItem
+                onClick={() => handleDelete(row.original.number)}
+              >
+                <TrashIcon className='mr-2 size-3' /> Delete
               </DropdownMenuItem>
               <DropdownMenuItem>
-                <Pencil className='mr-2 size-3 ' /> Edit
+                <Pencil className='mr-2 size-3' /> Edit
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
