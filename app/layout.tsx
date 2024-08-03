@@ -1,10 +1,9 @@
-import type { Metadata, Viewport } from 'next';
+import '@/styles/global.css';
+import { cn } from '@/lib/utils';
 import type { ReactNode } from 'react';
+import type { Metadata, Viewport } from 'next';
 import Providers from '../containers/providers';
 import { Inter as FontSans } from 'next/font/google';
-import { cn } from '@/lib/utils';
-import '@/styles/global.css';
-import { Toaster } from 'sonner';
 
 const fontSans = FontSans({
   subsets: ['latin'],

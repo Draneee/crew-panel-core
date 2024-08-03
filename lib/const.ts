@@ -1,3 +1,4 @@
+export const API_URL_CHECK_NUMBER = process.env.NEXT_PUBLIC_API_NUMBERS;
 export const API_URL_SUPABASE = process.env.NEXT_PUBLIC_SUPABASE_URL;
 export const TOKEN_SUPABASE = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 export enum CATALOG_STEPS {

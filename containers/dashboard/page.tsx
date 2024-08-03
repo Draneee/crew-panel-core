@@ -34,14 +34,14 @@ const ContainerDashboard = (props: IProps) => {
   } = useAnuelAA();
   const dataSelected = data.find((d) => d.id === openCard);
   return (
-    <div className='relative'>
+    <div className='relative overflow-auto'>
       <TabsDashboard
         tabSelected={tabSelected}
         setTabSelected={setTabSelected}
       />
-      <section className='flex-1 w-full max-w-2xl p-4 pb-12 mx-auto space-y-4'>
+      <section className='flex-1 w-full max-w-2xl p-4 pb-12 mx-auto space-y-4 overflow-auto'>
         <FilterSection handleSearch={handleSearch} />
-        <section className='mb-12 space-y-4'>
+        <section className='mb-12 space-y-4 overflow-auto'>
           {!isLoading ? (
             data.map((r: WebEngageV1InfoAirports) => (
               <CardRender

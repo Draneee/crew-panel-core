@@ -20,18 +20,21 @@ const TabsDashboard = (props: IProps) => {
   return (
     <header
       className={cn(
-        'fixed inset-x-0 bottom-0 z-50 grid w-full h-12 max-w-2xl grid-cols-2 mx-auto bg-black',
+        'fixed bottom-0 z-10 grid h-12 grid-cols-2 mx-auto flex-1 bg-[#000]',
         isBrowser ? 'h-9' : 'h-12'
       )}
+      style={{
+        width: '-webkit-fill-available',
+      }}
     >
       {Object.entries(TABS).map(([k, v]) => (
         <article
           key={v.value}
           className={cn(
-            'flex text-sm text-center bg-white/10 justify-center gap-2',
+            'flex text-sm text-center bg-[#000] justify-center gap-2',
             props.tabSelected === v.value
-              ? 'bg-white/20'
-              : 'cursor-pointer text-white/30',
+              ? 'bg-[#191919]'
+              : 'cursor-pointer text-[#bdbdbd]',
             isBrowser ? 'items-center' : 'items-start pt-1'
           )}
           onClick={() => props.setTabSelected(v.value)}

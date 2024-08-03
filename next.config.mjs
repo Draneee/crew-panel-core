@@ -1,4 +1,4 @@
-// @ts-check
+// @ts-nocheck
 import withSerwistInit from '@serwist/next';
 
 // You may want to use a more robust revision to cache
