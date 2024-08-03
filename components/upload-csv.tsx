@@ -159,7 +159,7 @@ export function Uploadcsv() {
   const percentageOfNumbersSelected =
     (Object.values(numberSelected).filter(Boolean).length / csvData.length) *
     100;
-  console.log(percentageOfNumbersSelected);
+
   return (
     <form className='w-full max-w-3xl mx-auto'>
       {csvData.length === 0 && (
@@ -200,7 +200,10 @@ export function Uploadcsv() {
           <header className='flex gap-8 mb-4'>
             <h3 className='block text-xl font-semibold'>CSV Preview</h3>
             <section className='grid flex-1 place-items-center'>
-              <Progress value={33} className='bg-none' />
+              <Progress
+                value={percentageOfNumbersFounded}
+                className='bg-none'
+              />
               <Progress
                 value={percentageOfNumbersSelected}
                 className='[&>*]:bg-green-400/60 -mt-7'
