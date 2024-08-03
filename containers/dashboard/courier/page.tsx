@@ -192,7 +192,11 @@ const ColumnsCourierTable = [
     accessorKey: 'name_selected',
     header: () => 'Nombre Seleccionado',
     cell: ({ row }: any) => {
-      return <div>{row.original.name_selected}</div>;
+      return (
+        <div className='overflow-hidden max-w-36 text-ellipsis'>
+          {row.original.name_selected}
+        </div>
+      );
     },
   },
 ];
