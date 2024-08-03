@@ -17,6 +17,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { CommandMenu } from './command-menu';
 import { useRouter } from 'next/navigation';
+import { LogOutIcon } from 'lucide-react';
 
 export default function Searchbar() {
   const router = useRouter();
@@ -37,20 +38,8 @@ export default function Searchbar() {
               variant={'ghost'}
               className='flex gap-2 focus-visible:ring-0 focus-visible:ring-offset-0'
             >
-              <Avatar className='size-7 '>
-                <AvatarImage src='https://res.cloudinary.com/dynscts1t/image/upload/v1710014141/Logo_11_qnmquh.png' />
-                <AvatarFallback className='text-white bg-black'>
-                  AD
-                </AvatarFallback>
-              </Avatar>
-              <section className='flex flex-col'>
-                <p className='font-mono text-sm truncate max-w-28'>
-                  Adrian Avila
-                </p>
-                {/* <p className='text-[11px] leading-[12px] font-mono font-medium  text-gray-400 text-start'>
-                Admin
-              </p> */}
-              </section>
+              <LogOutIcon className='rotate-180 size-4' />
+              Logout
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent className='w-56'>

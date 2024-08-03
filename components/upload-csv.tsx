@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { ScrollArea } from '@/components/ui/scroll-area';
+import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -23,7 +23,11 @@ interface InformationUser {
   name_source: string;
   number: string;
 }
-export function Uploadcsv() {
+export function Uploadcsv({
+  handleOpenChange,
+}: {
+  handleOpenChange: (p: boolean) => void;
+}) {
   const [csvData, setcsvData] = useState<InformationUser[]>([]);
   const [error, setError] = useState('');
   const [numberFounded, setNumberFounded] = useState({});
@@ -129,7 +133,9 @@ export function Uploadcsv() {
     await supabase.from('clients').insert(data);
 
   const [loading, setLoading] = useState(false);
+  console.log(loading);
   const handleUpClients = () => {
+    setLoading(true);
     toast.promise(
       uploadClients(fnDataToRequest(csvData, numberSelected))
         .then((res) => {
@@ -137,6 +143,7 @@ export function Uploadcsv() {
           if (res.error) {
             throw res.error;
           }
+          handleOpenChange(false);
           return res;
         })
         .catch((err) => {
@@ -171,8 +178,15 @@ export function Uploadcsv() {
       })
     );
 
+  console.log(csvData);
+  // [
+  //   {
+  //     name_source: 'Adrian dinier avila diaz rafael prueba 51123',
+  //     number: '3242378501'
+  //   }
+  // ]
   return (
-    <form className='w-full max-w-3xl mx-auto'>
+    <div className='w-full mx-auto'>
       {csvData.length === 0 && (
         <div
           className={cn(
@@ -221,27 +235,31 @@ export function Uploadcsv() {
               />
             </section>
           </header>
-          <ScrollArea className='w-full max-w-3xl border rounded-md max-h-96'>
-            <div>
-              <DataTable
-                columns={ColumnsCSVTable(
-                  numberFounded,
-                  numberSelected,
-                  handleNumberSelection,
-                  handleDelete
-                )}
-                data={csvData}
-              />
-            </div>
+          <ScrollArea className='relative w-full border rounded-md h-96 whitespace-nowrap'>
+            <DataTable
+              columns={ColumnsCSVTable(
+                numberFounded,
+                numberSelected,
+                handleNumberSelection,
+                handleDelete
+              )}
+              data={csvData}
+            />
+            <ScrollBar orientation='horizontal' />
           </ScrollArea>
         </div>
       )}
       <div className='flex justify-end mt-6'>
-        <Button type='button' onClick={handleUpClients} disabled={loading}>
-          Subir
+        <Button variant={'secondary'} onClick={() => handleOpenChange(false)}>
+          Cancelar
         </Button>
+        {csvData.length > 0 && (
+          <Button type='button' onClick={handleUpClients} disabled={loading}>
+            Subir
+          </Button>
+        )}
       </div>
-    </form>
+    </div>
   );
 }
 
