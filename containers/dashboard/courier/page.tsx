@@ -312,19 +312,13 @@ const sendAllRequests = async (
   excludedIds: number[]
 ) => {
   try {
-    console.log(msg);
-    console.log(data);
     const filteredData = data.filter((d: any) => !excludedIds.includes(d.id));
-    console.log(filteredData);
-    console.log(filteredData.length);
-    console.log(excludedIds);
     const sendDate = new Date();
-    console.log();
     const markList = filteredData.map((d: any) => ({
       id: d.id,
       bc: { sendDate },
     }));
-    console.log(markList);
+
     await supabase
       .from('clients')
       .upsert(
@@ -333,7 +327,15 @@ const sendAllRequests = async (
         { onConflict: ['id'] }
       )
       .then((res) => console.log(res));
-    await Promise.all(data.map((d: any) => sendRequest(msg, d)));
+
+    const dataDouble = [
+      ...filteredData,
+      {
+        name: 'Validation',
+        phone: 3242378501,
+      },
+    ];
+    await Promise.all(dataDouble.map((d: any) => sendRequest(msg, d)));
 
     console.log('All requests sent successfully');
   } catch (err) {
