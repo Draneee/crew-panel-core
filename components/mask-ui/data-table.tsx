@@ -91,6 +91,7 @@ const DataTable = (props: IProps) => {
             arr.push({
               phone: keyObj.original.number,
               name: keyObj.original.name_selected,
+              id: keyObj.original.id,
             });
           } else {
             const keyObj2 = p?.find(

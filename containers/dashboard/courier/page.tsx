@@ -45,12 +45,9 @@ const formSchema = z.object({
   message: z.string().min(2).max(160),
   destination: z.string().min(1),
 });
+import { differenceInMilliseconds, format } from 'date-fns';
 
 const CourierContainer = () => {
-  const { imageSrc, loading, error } = useScrape();
-  console.log(imageSrc);
-  console.log(loading);
-  console.log(error);
   const [isOpenModalSendMesage, setIsOpenModalSendMesage] =
     React.useState(false);
   const [rowSelection, setRowSelection] = React.useState<any[]>([]);
@@ -62,10 +59,50 @@ const CourierContainer = () => {
     },
   });
 
+  const { data, isLoading, pagination, handlerPageSize, handlerCurrentPage } =
+    useTableFetch('clients');
+
+  const disabledButton = rowSelection.length === 0;
+  // const { imageSrc, loading, error, recaptchaRef, onCaptchaChange } =
+  //   useScrape();
+  // console.log(imageSrc);
+  // console.log(loading);
+  // console.log(error);
+  // console.log(imageSrc);
+
+  const updateUsers = async () =>
+    await supabase
+      .from('clients')
+      .upsert(
+        [
+          {
+            id: 3440,
+            bc: {
+              sendDate: new Date(),
+            },
+          },
+          {
+            id: 3439,
+            bc: {
+              sendDate: new Date(),
+            },
+          },
+        ],
+        //@ts-ignore
+        { onConflict: ['id'] }
+      )
+      .then((res) => console.log(res));
+
+  const excludedNumbers = data?.data?.flatMap((d) =>
+    isAvaibleTimeToSendMessage(d?.bc?.sendDate, d?.bc?.recived) ? [] : d.id
+  );
+  console.log(excludedNumbers);
+  console.log(data?.data?.[3]?.bc?.dateSend);
+
   const handleSubmit = async ({ message }: z.infer<typeof formSchema>) =>
     await new Promise((res, rej) => {
       toast.promise(
-        sendMessage(message, rowSelection).then(() => {
+        sendMessage(message, rowSelection, excludedNumbers as any).then(() => {
           form.setValue('message', '');
           setIsOpenModalSendMesage(false);
           setTimeout(() => res(''), 2000);
@@ -80,14 +117,9 @@ const CourierContainer = () => {
         }
       );
     });
-
-  const { data, isLoading, pagination, handlerPageSize, handlerCurrentPage } =
-    useTableFetch('clients');
-
-  const disabledButton = rowSelection.length === 0;
   return (
     <section className='flex-1 w-full max-w-5xl p-4 mx-auto space-y-4 overflow-auto'>
-      {imageSrc}
+      <Button onClick={updateUsers}>update req</Button>
       <section className='flex justify-between'>
         <section className='flex items-center'>
           <h2 className='text-xl font-medium'>Mensajeria</h2>
@@ -222,15 +254,21 @@ const ColumnsCourierTable = [
       </div>
     ),
     cell: ({ row }: any) => {
+      const areRecived = row?.original?.bc?.recived === true;
+      const areAvaible = areRecived
+        ? false
+        : isAvaibleTimeToSendMessage(row?.original?.bc?.sendDate);
+
       return (
         <div className='w-4 h-4'>
-          <Checkbox
-            checked={row.getIsSelected()}
-            onCheckedChange={(value) => row.toggleSelected(!!value)}
-            aria-label='Select row'
-            className='h-4'
-            disabled
-          />
+          {areAvaible && (
+            <Checkbox
+              checked={row.getIsSelected()}
+              onCheckedChange={(value) => row.toggleSelected(!!value)}
+              aria-label='Select row'
+              className='h-4'
+            />
+          )}
         </div>
       );
     },
@@ -264,12 +302,28 @@ const ColumnsCourierTable = [
     accessorKey: 'bc',
     header: () => 'BC',
     cell: ({ row }: any) => {
-      const areAvaible = true;
+      const areRecived = row?.original?.bc?.recived === true;
+      const areAvaible = isAvaibleTimeToSendMessage(
+        row?.original?.bc?.sendDate
+      );
+
       return (
         <div className='grud place-items-center'>
           <Pinger
-            softColor={!areAvaible ? 'bg-gray-200' : 'bg-green-200'}
-            hardColor={!areAvaible ? 'bg-gray-400' : 'bg-green-400'}
+            softColor={
+              areRecived
+                ? 'bg-red-400'
+                : !areAvaible
+                ? 'bg-gray-200'
+                : 'bg-green-200'
+            }
+            hardColor={
+              areRecived
+                ? 'bg-red-400'
+                : !areAvaible
+                ? 'bg-gray-600'
+                : 'bg-green-400'
+            }
           />
         </div>
       );
@@ -277,12 +331,56 @@ const ColumnsCourierTable = [
   },
 ];
 
-const sendMessage = (msg: string, data: { name: string; phone: string }[]) =>
-  sendAllRequests(msg, data);
+const validateAreAvaible = (row: any) => !row.original.bc?.sendDate;
 
-const sendAllRequests = async (msg: string, data: any) => {
+const sendMessage = (
+  msg: string,
+  data: { name: string; phone: string }[],
+  excludedIds: number[]
+) => sendAllRequests(msg, data, excludedIds);
+
+const sendAllRequests = async (
+  msg: string,
+  data: any,
+  excludedIds: number[]
+) => {
   try {
-    await Promise.all(data.map((d: any) => sendRequest(msg, d)));
+    console.log(msg);
+    console.log(data);
+    const filteredData = data.filter((d: any) => !excludedIds.includes(d.id));
+    console.log(filteredData);
+    console.log(filteredData.length);
+    console.log(excludedIds);
+    // await Promise.all(data.map((d: any) => sendRequest(msg, d)))
+    const sendDate = new Date();
+    console.log();
+    const markList = filteredData.map((d: any) => ({
+      id: d.id,
+      bc: { sendDate },
+    }));
+    console.log(markList);
+    await supabase
+      .from('clients')
+      .upsert(
+        markList,
+        // [
+        //   {
+        //     id: 3440,
+        //     bc: {
+        //       sendDate: new Date(),
+        //     },
+        //   },
+        //   {
+        //     id: 3439,
+        //     bc: {
+        //       sendDate: new Date(),
+        //     },
+        //   },
+        // ],
+        //@ts-ignore
+        { onConflict: ['id'] }
+      )
+      .then((res) => console.log(res));
     console.log('All requests sent successfully');
   } catch (err) {
     console.error('Error sending all requests:', err);
@@ -305,7 +403,7 @@ const sendRequest = async (
     if (personalizedMsg.includes('{name}'))
       personalizedMsg = personalizedMsg.replace('{name}', nameParsed);
     if (personalizedMsg.includes('{url}')) {
-      const { short_url } = await createShortURL(nameParsed);
+      const { short_url } = await createShortURL(nameParsed, phone);
       const parsedUrl = short_url.split('https://').pop();
 
       personalizedMsg = personalizedMsg.replace('{url}', parsedUrl);
@@ -323,3 +421,23 @@ const DATA_DESTINATION = [
     label: 'Bancolombia',
   },
 ];
+const isAvaibleTimeToSendMessage = (dateSend: string, recived?: boolean) => {
+  if (recived) return false;
+  if (!dateSend) {
+    console.log(dateSend);
+    return true;
+  }
+  console.log(dateSend);
+  const sendDate = new Date(dateSend);
+  const now = new Date();
+  const twelveHoursInMilliseconds = 12 * 60 * 60 * 1000; // 12 hours in milliseconds
+
+  // Calculate the difference in milliseconds
+  const timeDifference = differenceInMilliseconds(now, sendDate);
+
+  // Check if the difference is greater than 12 hours
+  if (timeDifference > twelveHoursInMilliseconds) {
+    console.log(format(sendDate, 'dd-MM-yyyy hh:mm a'));
+    return true;
+  }
+};
