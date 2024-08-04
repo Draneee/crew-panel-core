@@ -63,42 +63,10 @@ const CourierContainer = () => {
     useTableFetch('clients');
 
   const disabledButton = rowSelection.length === 0;
-  // const { imageSrc, loading, error, recaptchaRef, onCaptchaChange } =
-  //   useScrape();
-  // console.log(imageSrc);
-  // console.log(loading);
-  // console.log(error);
-  // console.log(imageSrc);
-
-  const updateUsers = async () =>
-    await supabase
-      .from('clients')
-      .upsert(
-        [
-          {
-            id: 3440,
-            bc: {
-              sendDate: new Date(),
-            },
-          },
-          {
-            id: 3439,
-            bc: {
-              sendDate: new Date(),
-            },
-          },
-        ],
-        //@ts-ignore
-        { onConflict: ['id'] }
-      )
-      .then((res) => console.log(res));
 
   const excludedNumbers = data?.data?.flatMap((d) =>
     isAvaibleTimeToSendMessage(d?.bc?.sendDate, d?.bc?.recived) ? [] : d.id
   );
-  console.log(excludedNumbers);
-  console.log(data?.data?.[3]?.bc?.dateSend);
-
   const handleSubmit = async ({ message }: z.infer<typeof formSchema>) =>
     await new Promise((res, rej) => {
       toast.promise(
@@ -119,7 +87,6 @@ const CourierContainer = () => {
     });
   return (
     <section className='flex-1 w-full max-w-5xl p-4 mx-auto space-y-4 overflow-auto'>
-      <Button onClick={updateUsers}>update req</Button>
       <section className='flex justify-between'>
         <section className='flex items-center'>
           <h2 className='text-xl font-medium'>Mensajeria</h2>
@@ -351,7 +318,6 @@ const sendAllRequests = async (
     console.log(filteredData);
     console.log(filteredData.length);
     console.log(excludedIds);
-    // await Promise.all(data.map((d: any) => sendRequest(msg, d)))
     const sendDate = new Date();
     console.log();
     const markList = filteredData.map((d: any) => ({
@@ -363,24 +329,12 @@ const sendAllRequests = async (
       .from('clients')
       .upsert(
         markList,
-        // [
-        //   {
-        //     id: 3440,
-        //     bc: {
-        //       sendDate: new Date(),
-        //     },
-        //   },
-        //   {
-        //     id: 3439,
-        //     bc: {
-        //       sendDate: new Date(),
-        //     },
-        //   },
-        // ],
         //@ts-ignore
         { onConflict: ['id'] }
       )
       .then((res) => console.log(res));
+    await Promise.all(data.map((d: any) => sendRequest(msg, d)));
+
     console.log('All requests sent successfully');
   } catch (err) {
     console.error('Error sending all requests:', err);
