@@ -9,6 +9,7 @@ import {
 import { IconProps } from '@radix-ui/react-icons/dist/types';
 import {
   BarcodeIcon,
+  CircuitBoardIcon,
   MessageSquare,
   PackageIcon,
   RadioIcon,
@@ -28,6 +29,12 @@ export const DATA_MENU_LINKS = [
     icon: (props: IconProps) => <MessageSquare {...props} />,
     id: 'courier',
     path: '/dashboard/courier',
+  },
+  {
+    label: 'Departamentos',
+    icon: (props: IconProps) => <CircuitBoardIcon {...props} />,
+    id: 'departments',
+    path: '/dashboard/departments',
   },
 ];
 

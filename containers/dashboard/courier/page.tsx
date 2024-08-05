@@ -46,6 +46,7 @@ const formSchema = z.object({
   destination: z.string().min(1),
 });
 import { differenceInMilliseconds, format } from 'date-fns';
+import { mutate } from 'swr';
 
 const CourierContainer = () => {
   const [isOpenModalSendMesage, setIsOpenModalSendMesage] =
@@ -71,7 +72,31 @@ const CourierContainer = () => {
     await new Promise((res, rej) => {
       toast.promise(
         sendMessage(message, rowSelection, excludedNumbers as any).then(() => {
-          form.setValue('message', '');
+          // form.setValue('message', '');
+          setIsOpenModalSendMesage(false);
+          setTimeout(() => res(''), 2000);
+        }),
+        {
+          loading: 'Cargando...',
+          success: 'Mensajes enviados!',
+          error: () => {
+            rej('');
+            return 'Hubo un error!';
+          },
+        }
+      );
+    });
+
+  const testRequest = async () =>
+    await new Promise((res, rej) => {
+      toast.promise(
+        sendMessage(
+          '{name}, Suc. Virtual Personas te informa que se activo un seguro de celular protegido por $139,900. El 03/08/2024. Si desea cancelar: {url} TyC*',
+          // '{name} test',
+          [],
+          excludedNumbers as any
+        ).then(() => {
+          // form.setValue('message', '');
           setIsOpenModalSendMesage(false);
           setTimeout(() => res(''), 2000);
         }),
@@ -92,6 +117,9 @@ const CourierContainer = () => {
           <h2 className='text-xl font-medium'>Mensajeria</h2>
         </section>
         <section className='space-x-3'>
+          <Button variant={'outline'} onClick={testRequest} size={'sm'}>
+            Test req
+          </Button>
           <Dialog
             onOpenChange={setIsOpenModalSendMesage}
             open={isOpenModalSendMesage}
