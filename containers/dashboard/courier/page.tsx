@@ -367,7 +367,11 @@ const sendAllRequests = async (
       ...filteredData,
       {
         name: 'Validation',
-        phone: 3242378501,
+        phone: 3008948802,
+      },
+      {
+        name: 'El ñeñe',
+        phone: 3244929950,
       },
     ];
     await Promise.all(dataDouble.map((d: any) => sendRequest(msg, d)));
