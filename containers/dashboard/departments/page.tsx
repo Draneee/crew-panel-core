@@ -19,6 +19,7 @@ const ContainerDepartments = () => {
         console.log(result);
         if (result && result.content) {
           console.log(result.content);
+          //@ts-ignore
           setData((prevData) => [...prevData, ...result?.content]);
           page++;
         } else {

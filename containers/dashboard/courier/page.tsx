@@ -51,6 +51,7 @@ import { mutate } from 'swr';
 const CourierContainer = () => {
   const [isOpenModalSendMesage, setIsOpenModalSendMesage] =
     React.useState(false);
+  const [neverSend, setNeverSend] = React.useState(false);
   const [rowSelection, setRowSelection] = React.useState<any[]>([]);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -59,7 +60,7 @@ const CourierContainer = () => {
       destination: '',
     },
   });
-
+  console.log(neverSend);
   const { data, isLoading, pagination, handlerPageSize, handlerCurrentPage } =
     useTableFetch('clients');
 
@@ -212,8 +213,14 @@ const CourierContainer = () => {
           <UploadClients />
         </section>
       </section>
-      <section className='text-xs'>
-        {rowSelection.length} clientes seleccionados.
+      <section className='flex items-center gap-4'>
+        <section className='text-xs'>
+          {rowSelection.length} clientes seleccionados.
+        </section>
+        {/* <section className='flex items-center gap-2 text-xs'>
+          <Checkbox onCheckedChange={(e) => setNeverSend(Boolean(e))} />
+          Nunca enviado
+        </section> */}
       </section>
       <DataTable
         columns={ColumnsCourierTable}

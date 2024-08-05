@@ -45,7 +45,8 @@ const fetcher = async (
   // Construye la consulta con el rango definido
   let query = supabase
     .from(key)
-    .select('*', { count: 'exact' }) // Incluye el conteo total de registros
+    .select('*', { count: 'exact' })
+    .is('bc', null)
     .order('id', { ascending: false })
     .range(rangeStart, rangeEnd);
 
