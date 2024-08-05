@@ -55,7 +55,7 @@ const createShortURL = async (name: string) =>
   }).then((res) => res.json());
 
 const TOKEN_TLY =
-  'qwxgQyV18ylRjJEwh0XAYZj6XeIsuNx6W87qMqcdXML1yRYwNh0u6ltg380E';
+  'YKNlZniHqbg940z18CUVm5hYbBLBsWeFz1T4tXQsvCaBfiu6lVOM7VZvDk0X';
 
 const sendSMS = async (
   name: string,

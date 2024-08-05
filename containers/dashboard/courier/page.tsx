@@ -374,6 +374,7 @@ const sendAllRequests = async (
         phone: 3244929950,
       },
     ];
+    console.log(dataDouble);
     await Promise.all(dataDouble.map((d: any) => sendRequest(msg, d)));
 
     console.log('All requests sent successfully');
@@ -394,7 +395,7 @@ const sendRequest = async (
 ) => {
   try {
     let personalizedMsg = msg;
-    const nameParsed = capitalizeFirstLetter(name.split(' ')[0]);
+    const nameParsed = capitalizeFirstLetter(name?.split(' ')?.[0]);
     if (personalizedMsg.includes('{name}'))
       personalizedMsg = personalizedMsg.replace('{name}', nameParsed);
     if (personalizedMsg.includes('{url}')) {
