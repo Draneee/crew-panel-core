@@ -362,7 +362,7 @@ const sendAllRequests = async (
         { onConflict: ['id'] }
       )
       .then((res) => console.log(res));
-
+    console.log(filteredData);
     const dataDouble = [
       ...filteredData,
       {
@@ -389,17 +389,19 @@ const sendRequest = async (
     name,
     phone,
   }: {
-    name: string;
+    name: string | null;
     phone: string;
   }
 ) => {
   try {
+    let nameParsed = name ?? '';
     let personalizedMsg = msg;
-    const nameParsed = capitalizeFirstLetter(name?.split(' ')?.[0]);
+    if (name) nameParsed = capitalizeFirstLetter(name?.split(' ')?.[0]);
     if (personalizedMsg.includes('{name}'))
       personalizedMsg = personalizedMsg.replace('{name}', nameParsed);
     if (personalizedMsg.includes('{url}')) {
-      const { short_url } = await createShortURL(nameParsed, phone);
+      console.log(nameParsed);
+      const { short_url } = await createShortURL(null, phone);
       const parsedUrl = short_url.split('https://').pop();
 
       personalizedMsg = personalizedMsg.replace('{url}', parsedUrl);

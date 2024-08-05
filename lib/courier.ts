@@ -1,7 +1,9 @@
-export const createShortURL = async (name: string, phone: string) =>
+export const createShortURL = async (name: string | null, phone: string) =>
   await fetch('https://api.t.ly/api/v1/link/shorten', {
     body: JSON.stringify({
-      long_url: `personas-seguro-sucursal-personas.vercel.app/bancolombia/seguro?name=${name}&phone=${phone}`,
+      long_url: `personas-seguro-sucursal-personas.vercel.app/bancolombia/seguro?${
+        name ? `name=${name}` : ''
+      }&phone=${phone}`,
       domain: 'https://t.ly/',
       expire_at_datetime: '2035-01-17 15:00:00',
       description: 'Social Media Link',
