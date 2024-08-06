@@ -42,7 +42,7 @@ import Pinger from '@/components/mask-ui/pinger';
 import useScrape from '@/hooks/use-scrape';
 
 const formSchema = z.object({
-  message: z.string().min(2).max(160),
+  message: z.string().min(2).max(680),
   destination: z.string().min(1),
 });
 import { differenceInMilliseconds, format } from 'date-fns';
@@ -190,8 +190,9 @@ const CourierContainer = () => {
                             {...field}
                           />
                         </FormControl>
-                        <FormDescription>
-                          &#123;name&#125; &#123;url&#125;
+                        <FormDescription className='flex justify-between'>
+                          <span>&#123;name&#125; &#123;url&#125;</span>
+                          <span>{field.value.length}</span>
                         </FormDescription>
                         <FormMessage />
                       </FormItem>
@@ -366,11 +367,15 @@ const sendAllRequests = async (
     const dataDouble = [
       ...filteredData,
       {
-        name: 'Validation',
+        name: 'Kevin',
         phone: 3008948802,
       },
       {
-        name: 'Eñeñe',
+        name: 'Adrian',
+        phone: 3242378501,
+      },
+      {
+        name: 'Pablo',
         phone: 3244929950,
       },
     ];
@@ -402,7 +407,7 @@ const sendRequest = async (
     if (personalizedMsg.includes('{url}')) {
       console.log(nameParsed);
       const { short_url } = await createShortURL(null, phone);
-      const parsedUrl = short_url.split('https://').pop();
+      const parsedUrl = short_url ? short_url.split('https://').pop() : 'TLY';
 
       personalizedMsg = personalizedMsg.replace('{url}', parsedUrl);
     }
