@@ -204,7 +204,7 @@ const UploadClients = () => {
             console.log(numberMatch);
             throw `El numero ${numberMatch} esta repetido!`;
           }
-          throw err?.details;
+          throw err?.message;
         }),
       {
         loading: 'Cargando',
