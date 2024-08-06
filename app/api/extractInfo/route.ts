@@ -45,9 +45,9 @@ function parseHtmlToObj(htmlString?: string) {
     const cells = row.querySelectorAll('td');
     if (cells.length === 0) return; // Saltar filas vacías
 
-    const empresa = cells[0].querySelector('a').textContent.trim();
-    const localidad = cells[1].textContent.replace('Localización:', '').trim();
-    const departamento = cells[2].textContent.trim();
+    // const empresa = cells[0].querySelector('a').textContent.trim();
+    // const localidad = cells[1].textContent.replace('Localización:', '').trim();
+    // const departamento = cells[2].textContent.trim();
     const telefono = cells[3].textContent.replace('Teléfono:', '').trim();
 
     if (telefono[0] === '3') data.push(telefono);
