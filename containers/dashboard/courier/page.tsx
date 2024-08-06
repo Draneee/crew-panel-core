@@ -409,7 +409,7 @@ const sendRequest = async (
       const { short_url } = await createShortURL(null, phone);
       const parsedUrl = short_url
         ? short_url.split('https://').pop()
-        : 'https://t.ly/8GYVH';
+        : 't.ly/8GYVH';
 
       personalizedMsg = personalizedMsg.replace('{url}', parsedUrl);
     }
