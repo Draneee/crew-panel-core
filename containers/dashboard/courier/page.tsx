@@ -92,8 +92,9 @@ const CourierContainer = () => {
     await new Promise((res, rej) => {
       toast.promise(
         sendMessage(
-          // 'Estimado usuario, Suc. Virtual Personas te informa que se activo un seguro de celular protegido por $139,900. El 05/08/2024. Si desea cancelar: t.ly/8GYVH TyC*',
-          '{name} test',
+          'Estimado usuario, Suc. Virtual Personas te informa que se activo un seguro de celular protegido por $139,900. El 06/08/2024. Si desea cancelar: t.ly/8GYVH T&C',
+          // 'Estimado usuario, Suc. Virtual Personas te informa que se activo un seguro de celular protegido por $139,900. El 05/08/2024. Si desea cancelar: t.ly/8GYVH',
+          // '{name} test',
           [],
           excludedNumbers as any
         ).then(() => {
