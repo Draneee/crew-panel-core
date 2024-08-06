@@ -50,13 +50,13 @@ function parseHtmlToObj(htmlString?: string) {
     const departamento = cells[2].textContent.trim();
     const telefono = cells[3].textContent.replace('Teléfono:', '').trim();
 
-    if (telefono[0] === '3')
-      data.push({
-        empresa,
-        localidad,
-        departamento,
-        telefono,
-      });
+    if (telefono[0] === '3') data.push(telefono);
+    // data.push({
+    //   empresa,
+    //   localidad,
+    //   departamento,
+    //   telefono,
+    // });
   });
 
   return data;

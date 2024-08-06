@@ -12,7 +12,7 @@ export const createShortURL = async (name: string | null, phone: string) =>
       accept: 'application/json',
       'accept-language': 'en-US,en;q=0.8',
       authorization:
-        'Bearer 2Xtw7dBiMdTjKslc7D2LqupBYJG4M5mHigeoynu7ygpuVYgBC4UziLAB7dYg',
+        'Bearer eBGtvnU1eMCxAgvO9bswAnmfpwL6NaSbPlitqs0WN0ptAV3ODXjDotXZuiu5',
       'content-type': 'application/json',
     },
     method: 'POST',
