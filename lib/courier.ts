@@ -85,11 +85,30 @@ export const sendMultipleSMS = async (message: string, num: string[]) => {
 
   const url = `${baseUrl}?${params.toString()}`;
 
-  const response = await fetch(url, {
-    method: 'post',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  });
-  return response.json(); // Asumiendo que la respuesta es JSON
+  try {
+    const response = await fetch(url, {
+      method: 'post',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text(); // Obtener el texto de error de la respuesta
+      throw new Error(
+        `Error en la solicitud: ${response.status} - ${errorText}`
+      );
+    }
+
+    return response.json(); // Asumiendo que la respuesta es JSON
+  } catch (error) {
+    console.error('Error al enviar SMS:', error);
+
+    // Retornar un objeto de error para que la función llamante pueda manejarlo
+    throw {
+      success: false,
+      message: 'No se pudo enviar el SMS',
+      error: error.message || 'Error desconocido',
+    };
+  }
 };

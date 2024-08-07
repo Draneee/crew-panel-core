@@ -58,6 +58,7 @@ const CourierContainer = () => {
     React.useState(false);
   const [neverSend, setNeverSend] = React.useState(false);
   const [rowSelection, setRowSelection] = React.useState<any[]>([]);
+  const [rowSelectionData, setRowSelectionData] = React.useState<any[]>([]);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -234,6 +235,8 @@ const CourierContainer = () => {
         data={data?.data ?? []}
         setRowData={setRowSelection}
         loading={isLoading}
+        defaultRows={rowSelection}
+        setRowSelection={setRowSelection}
         rowData={rowSelection}
       />
       <DataTablePaginationClientSide
@@ -385,9 +388,7 @@ const sendAllRequests = async (
     // multiple
 
     const phones = dataDouble.map((d) => '57' + d.phone);
-    await sendMultipleSMS(msg, phones).catch((c) => {
-      console.log(c);
-    });
+    await sendMultipleSMS(msg, phones);
 
     await supabase
       .from('clients')
@@ -401,6 +402,7 @@ const sendAllRequests = async (
     console.log('All requests sent successfully');
   } catch (err) {
     console.error('Error sending all requests:', err);
+    throw err;
   }
 };
 

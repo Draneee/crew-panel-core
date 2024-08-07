@@ -4,18 +4,23 @@ import { JSDOM } from 'jsdom';
 
 export const GET = async (req: NextRequest) => {
   const queryParams = new URL(req.url).searchParams;
-  const urlQuery = queryParams.get('url');
-  if (!urlQuery) {
+  const urlsQuery = queryParams.get('urls');
+  if (!urlsQuery) {
     return NextResponse.json(meta);
   }
-  try {
-    const data = await extract(urlQuery);
 
-    const content = parseHtmlToObj(data?.content);
+  const urls = urlsQuery.split(',').map((url) => url.trim());
+  const contentArray = [];
+
+  try {
+    for (const url of urls) {
+      const data = await extract(url);
+      const content = parseHtmlToObj(data?.content);
+      contentArray.push(...content); // Add all numbers to the main array
+    }
 
     return NextResponse.json({
-      urlQuery,
-      content,
+      content: contentArray,
     });
   } catch (err) {
     console.log('err =>', err);
@@ -27,6 +32,7 @@ export const GET = async (req: NextRequest) => {
     });
   }
 };
+
 const meta = {
   service: 'article-parser',
   lang: 'javascript',
@@ -35,7 +41,7 @@ const meta = {
 };
 
 function parseHtmlToObj(htmlString?: string) {
-  if (!htmlString) return {};
+  if (!htmlString) return [];
   const { document } = new JSDOM(htmlString).window;
   const rows = document.querySelectorAll('table tr');
   const data: any = [];
@@ -45,18 +51,9 @@ function parseHtmlToObj(htmlString?: string) {
     const cells = row.querySelectorAll('td');
     if (cells.length === 0) return; // Saltar filas vacías
 
-    // const empresa = cells[0].querySelector('a').textContent.trim();
-    // const localidad = cells[1].textContent.replace('Localización:', '').trim();
-    // const departamento = cells[2].textContent.trim();
     const telefono = cells[3].textContent.replace('Teléfono:', '').trim();
 
     if (telefono[0] === '3') data.push(telefono);
-    // data.push({
-    //   empresa,
-    //   localidad,
-    //   departamento,
-    //   telefono,
-    // });
   });
 
   return data;

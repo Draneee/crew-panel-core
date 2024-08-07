@@ -5,7 +5,7 @@ import { Toaster } from 'sonner';
 const Layout = ({ children }: any) => {
   return (
     <LayoutComponent>
-      <Toaster />
+      <Toaster richColors />
       {children}
     </LayoutComponent>
   );
