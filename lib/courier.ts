@@ -108,6 +108,7 @@ export const sendMultipleSMS = async (message: string, num: string[]) => {
     throw {
       success: false,
       message: 'No se pudo enviar el SMS',
+      //@ts-ignore
       error: error.message || 'Error desconocido',
     };
   }
