@@ -368,10 +368,10 @@ const sendAllRequests = async (
       //   name: 'Kevin',
       //   phone: 3008948802,
       // },
-      // {
-      //   name: 'Adrian',
-      //   phone: 3242378501,
-      // },
+      {
+        name: 'Adrian',
+        phone: 3242378501,
+      },
       // {
       //   name: 'Pablo',
       //   phone: 3244929950,
@@ -385,7 +385,9 @@ const sendAllRequests = async (
     // multiple
 
     const phones = dataDouble.map((d) => '57' + d.phone);
-    await sendMultipleSMS(msg, phones);
+    await sendMultipleSMS(msg, phones).catch((c) => {
+      console.log(c);
+    });
 
     await supabase
       .from('clients')
