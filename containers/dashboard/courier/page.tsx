@@ -12,7 +12,12 @@ import useTableFetch from '@/hooks/use-table-fetch';
 import { zodResolver } from '@hookform/resolvers/zod';
 import DataTable from '@/components/mask-ui/data-table';
 import UploadClients from './components/upload-clients';
-import { createShortURL, customSendSMS, sendSMS } from '@/lib/courier';
+import {
+  createShortURL,
+  customSendSMS,
+  sendMultipleSMS,
+  sendSMS,
+} from '@/lib/courier';
 import DataTablePaginationClientSide from '@/components/mask-ui/pagination';
 import {
   Form,
@@ -348,6 +353,7 @@ const sendAllRequests = async (
   data: any,
   excludedIds: number[]
 ) => {
+  console.log('hi');
   try {
     const filteredData = data.filter((d: any) => !excludedIds.includes(d.id));
     const sendDate = new Date();
@@ -355,6 +361,31 @@ const sendAllRequests = async (
       id: d.id,
       bc: { sendDate },
     }));
+
+    const dataDouble = [
+      ...filteredData,
+      // {
+      //   name: 'Kevin',
+      //   phone: 3008948802,
+      // },
+      // {
+      //   name: 'Adrian',
+      //   phone: 3242378501,
+      // },
+      // {
+      //   name: 'Pablo',
+      //   phone: 3244929950,
+      // },
+    ];
+    console.log(dataDouble);
+
+    //uniqe
+    // await Promise.all(dataDouble.map((d: any) => sendRequest(msg, d)));
+
+    // multiple
+
+    const phones = dataDouble.map((d) => '57' + d.phone);
+    await sendMultipleSMS(msg, phones);
 
     await supabase
       .from('clients')
@@ -364,24 +395,6 @@ const sendAllRequests = async (
         { onConflict: ['id'] }
       )
       .then((res) => console.log(res));
-    console.log(filteredData);
-    const dataDouble = [
-      ...filteredData,
-      {
-        name: 'Kevin',
-        phone: 3008948802,
-      },
-      {
-        name: 'Adrian',
-        phone: 3242378501,
-      },
-      {
-        name: 'Pablo',
-        phone: 3244929950,
-      },
-    ];
-    console.log(dataDouble);
-    await Promise.all(dataDouble.map((d: any) => sendRequest(msg, d)));
 
     console.log('All requests sent successfully');
   } catch (err) {

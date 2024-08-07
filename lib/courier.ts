@@ -71,3 +71,25 @@ export const customSendSMS = async (message: string, num = '3242378501') => {
   });
   return response.json(); // Asumiendo que la respuesta es JSON
 };
+export const sendMultipleSMS = async (message: string, num: string[]) => {
+  const baseUrl = 'https://bulksmsplans.com/api/send_sms_multi';
+  const params = new URLSearchParams({
+    api_id: 'APIVSyFoUzc120965',
+    api_password: '573008948802',
+    sms_type: 'Transactional',
+    sms_encoding: 'text',
+    sender: 'INFO',
+    number: num.join(','),
+    message,
+  });
+
+  const url = `${baseUrl}?${params.toString()}`;
+
+  const response = await fetch(url, {
+    method: 'post',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+  return response.json(); // Asumiendo que la respuesta es JSON
+};
