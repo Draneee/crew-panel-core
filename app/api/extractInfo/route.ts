@@ -16,6 +16,7 @@ export const GET = async (req: NextRequest) => {
     for (const url of urls) {
       const data = await extract(url);
       const content = parseHtmlToObj(data?.content);
+      console.log('data =>', content);
       contentArray.push(...content); // Add all numbers to the main array
     }
 
@@ -42,17 +43,38 @@ const meta = {
 
 function parseHtmlToObj(htmlString?: string) {
   if (!htmlString) return [];
+  console.log('htmlString', htmlString);
   const { document } = new JSDOM(htmlString).window;
-  const rows = document.querySelectorAll('table tr');
+
+  // Asegúrate de que el documento tiene una tabla
+  const tableCheck = document.querySelector('table');
+
+  let table = tableCheck ? tableCheck : document;
+
+  const rows = table.querySelectorAll('tr');
+  console.log('rows =>', rows);
   const data: any = [];
 
-  rows.forEach((row: any, index: any) => {
-    if (index === 0) return; // Saltar la fila del encabezado
+  console.log('rows =>', rows);
+
+  rows.forEach((row, index) => {
+    // Evita procesar la fila de encabezado
+    if (index === 0) return;
+
     const cells = row.querySelectorAll('td');
+    console.log('cells =>', cells);
     if (cells.length === 0) return; // Saltar filas vacías
 
-    const telefono = cells[3].textContent.replace('Teléfono:', '').trim();
+    // Asumiendo que el teléfono está en la última celda
+    const telefonoCell = cells[cells.length - 1]; // Asegúrate de que esta sea la celda correcta
+    if (!telefonoCell) return;
 
+    const telefonoText = telefonoCell.textContent;
+    const telefono = telefonoText
+      ? telefonoText.replace('Teléfono:', '').trim()
+      : '';
+
+    console.log('telefono', telefono);
     if (telefono[0] === '3') data.push(telefono);
   });
 
