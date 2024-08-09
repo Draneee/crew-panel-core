@@ -103,7 +103,7 @@ const ModalDetail = (props: IProps) => {
               </section>
             </div>
 
-            <DialogDescription className='grid grid-cols-4 gap-2'>
+            <DialogDescription className='grid grid-cols-4 gap-1'>
               {BUTTONS_OPTIONS.map((d) => (
                 <Button
                   key={d.label}
@@ -199,7 +199,7 @@ const BUTTONS_OPTIONS: TypeButtonOptions[] = [
     },
   },
   {
-    label: '⏳ DINAMICA',
+    label: '⏳ DIN',
     option: {
       error: false,
       step: CATALOG_BC.DYNAMIC,
@@ -228,7 +228,7 @@ const BUTTONS_OPTIONS: TypeButtonOptions[] = [
     },
   },
   {
-    label: '❌ DINAMICA',
+    label: '❌ DIN',
     option: {
       error: true,
       step: CATALOG_BC.DYNAMIC,
