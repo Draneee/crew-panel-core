@@ -41,7 +41,9 @@ const ModalDetail = (props: IProps) => {
   const [showMessages, setShowMessages] = React.useState(false);
   const handleClose = () => props.setOpenCard(undefined);
   const CURRENT_STEP = CATALOG_BC[props.data?.currentStep?.step ?? 0];
-  const user = props.data?.processHistory?.at(0)?.data.username;
+  const user =
+    props.data?.processHistory?.at(0)?.data.username ??
+    props.data?.processHistory?.at(0)?.data.document;
   const updateStep = async (step: number, error: boolean, label: string) => {
     await supabase
       .from('panel')

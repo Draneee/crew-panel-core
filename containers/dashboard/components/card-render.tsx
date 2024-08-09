@@ -11,7 +11,9 @@ const CardRender = (r: WebEngageV1InfoAirports) => {
   const CURRENT_STEP = CATALOG_BC[r?.currentStep.step];
 
   const COLOR_SELECTED = selectColorStatus(CURRENT_STEP);
-  const username = r.processHistory.at(0)?.data?.username;
+  const username =
+    r.processHistory.at(0)?.data?.username ??
+    r.processHistory.at(0)?.data?.document;
   console.log(r.dateCreation);
   return (
     <article
