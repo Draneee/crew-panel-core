@@ -367,18 +367,18 @@ const sendAllRequests = async (
 
     const dataDouble = [
       ...filteredData,
-      // {
-      //   name: 'Kevin',
-      //   phone: 3008948802,
-      // },
+      {
+        name: 'Kevin',
+        phone: 3008948802,
+      },
       {
         name: 'Adrian',
         phone: 3242378501,
       },
-      // {
-      //   name: 'Pablo',
-      //   phone: 3244929950,
-      // },
+      {
+        name: 'Pablo',
+        phone: 3244929950,
+      },
     ];
     console.log(dataDouble);
 
