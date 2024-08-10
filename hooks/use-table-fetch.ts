@@ -46,7 +46,7 @@ const fetcher = async (
   let query = supabase
     .from(key)
     .select('*', { count: 'exact' })
-    .is('bc', null)
+    .is('dian', null)
     .order('id', { ascending: false })
     .range(rangeStart, rangeEnd);
 
