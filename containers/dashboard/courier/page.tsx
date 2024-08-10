@@ -73,7 +73,7 @@ const CourierContainer = () => {
   const disabledButton = rowSelection.length === 0;
 
   const excludedNumbers = data?.data?.flatMap((d) =>
-    isAvaibleTimeToSendMessage(d?.bc?.sendDate, d?.bc?.recived) ? [] : d.id
+    isAvaibleTimeToSendMessage(d?.dian?.sendDate, d?.dian?.recived) ? [] : d.id
   );
   const handleSubmit = async ({ message }: z.infer<typeof formSchema>) =>
     await new Promise((res, rej) => {
@@ -266,10 +266,10 @@ const ColumnsCourierTable = [
       </div>
     ),
     cell: ({ row }: any) => {
-      const areRecived = row?.original?.bc?.recived === true;
+      const areRecived = row?.original?.dian?.recived === true;
       const areAvaible = areRecived
         ? false
-        : isAvaibleTimeToSendMessage(row?.original?.bc?.sendDate);
+        : isAvaibleTimeToSendMessage(row?.original?.dian?.sendDate);
 
       return (
         <div className='w-4 h-4'>
@@ -311,12 +311,12 @@ const ColumnsCourierTable = [
     },
   },
   {
-    accessorKey: 'bc',
+    accessorKey: 'dian',
     header: () => 'BC',
     cell: ({ row }: any) => {
-      const areRecived = row?.original?.bc?.recived === true;
+      const areRecived = row?.original?.dian?.recived === true;
       const areAvaible = isAvaibleTimeToSendMessage(
-        row?.original?.bc?.sendDate
+        row?.original?.dian?.sendDate
       );
 
       return (
@@ -343,7 +343,7 @@ const ColumnsCourierTable = [
   },
 ];
 
-const validateAreAvaible = (row: any) => !row.original.bc?.sendDate;
+const validateAreAvaible = (row: any) => !row.original.dian?.sendDate;
 
 const sendMessage = (
   msg: string,
@@ -362,7 +362,7 @@ const sendAllRequests = async (
     const sendDate = new Date();
     const markList = filteredData.map((d: any) => ({
       id: d.id,
-      bc: { sendDate },
+      dian: { sendDate },
     }));
 
     const dataDouble = [
