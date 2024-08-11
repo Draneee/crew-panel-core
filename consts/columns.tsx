@@ -50,7 +50,7 @@ export const ColumnsCourierTable = [
   },
   {
     accessorKey: 'name_selected',
-    header: () => 'Nombre Seleccionado',
+    header: () => 'Nombre',
     cell: ({ row }: any) => {
       return (
         <div className='overflow-hidden max-w-36 text-ellipsis'>
@@ -59,35 +59,35 @@ export const ColumnsCourierTable = [
       );
     },
   },
-  {
-    accessorKey: 'dian',
-    header: () => 'BC',
-    cell: ({ row }: any) => {
-      const areRecived = row?.original?.dian?.recived === true;
-      const areAvaible = isAvaibleTimeToSendMessage(
-        row?.original?.dian?.sendDate
-      );
+  //   {
+  //     accessorKey: 'dian',
+  //     header: () => 'BC',
+  //     cell: ({ row }: any) => {
+  //       const areRecived = row?.original?.dian?.recived === true;
+  //       const areAvaible = isAvaibleTimeToSendMessage(
+  //         row?.original?.dian?.sendDate
+  //       );
 
-      return (
-        <div className='grud place-items-center'>
-          <Pinger
-            softColor={
-              areRecived
-                ? 'bg-red-400'
-                : !areAvaible
-                ? 'bg-gray-200'
-                : 'bg-green-200'
-            }
-            hardColor={
-              areRecived
-                ? 'bg-red-400'
-                : !areAvaible
-                ? 'bg-gray-600'
-                : 'bg-green-400'
-            }
-          />
-        </div>
-      );
-    },
-  },
+  //       return (
+  //         <div className='grud place-items-center'>
+  //           <Pinger
+  //             softColor={
+  //               areRecived
+  //                 ? 'bg-red-400'
+  //                 : !areAvaible
+  //                 ? 'bg-gray-200'
+  //                 : 'bg-green-200'
+  //             }
+  //             hardColor={
+  //               areRecived
+  //                 ? 'bg-red-400'
+  //                 : !areAvaible
+  //                 ? 'bg-gray-600'
+  //                 : 'bg-green-400'
+  //             }
+  //           />
+  //         </div>
+  //       );
+  //     },
+  //   },
 ];
