@@ -57,7 +57,7 @@ const DataTablePaginationClientSide = (props: IProps) => {
             </SelectContent>
           </Select>
         </div>
-        <div className='flex w-[110px] items-center justify-center text-sm '>
+        <div className='flex items-center justify-center text-sm w-fit'>
           Página {page + 1} de {totalPage ? totalPage : 1}
         </div>
         <div className='flex items-center space-x-2'>

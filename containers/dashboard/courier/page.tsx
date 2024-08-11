@@ -77,7 +77,7 @@ const CourierContainer = () => {
   } = useCourier();
 
   const lengthSelection = Object.keys(table.getState().rowSelection).length;
-
+  console.log(data?.meta);
   return (
     <section className='flex flex-col flex-1 w-full max-w-5xl p-4 mx-auto space-y-4 overflow-auto'>
       <section className='flex justify-between gap-2 max-sm:flex-col max-sm:items-center'>
