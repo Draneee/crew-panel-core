@@ -1,5 +1,15 @@
 'use client';
 import { z } from 'zod';
+
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
+
 import React from 'react';
 import { toast } from 'sonner';
 import { useForm } from 'react-hook-form';
@@ -7,10 +17,10 @@ import { Button } from '@/components/ui/button';
 import { supabase } from '@/lib/supabase/client';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Textarea } from '@/components/ui/textarea';
-import { capitalizeFirstLetter } from '@/lib/utils';
+import { capitalizeFirstLetter, cn } from '@/lib/utils';
 import useTableFetch from '@/hooks/use-table-fetch';
 import { zodResolver } from '@hookform/resolvers/zod';
-import DataTable from '@/components/mask-ui/data-table';
+import DataTable, { Loader } from '@/components/mask-ui/data-table';
 import UploadClients from './components/upload-clients';
 import {
   createShortURL,
@@ -39,207 +49,231 @@ import {
 import {
   Select,
   SelectContent,
+  SelectGroup,
   SelectItem,
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import Pinger from '@/components/mask-ui/pinger';
-import useScrape from '@/hooks/use-scrape';
-
-const formSchema = z.object({
-  message: z.string().min(2).max(680),
-  destination: z.string().min(1),
-});
-import { differenceInMilliseconds, format } from 'date-fns';
-import { mutate } from 'swr';
+import { flexRender } from '@tanstack/react-table';
+import useCourier from '@/hooks/use-courier';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 const CourierContainer = () => {
-  const [isOpenModalSendMesage, setIsOpenModalSendMesage] =
-    React.useState(false);
-  const [neverSend, setNeverSend] = React.useState(false);
-  const [rowSelection, setRowSelection] = React.useState<any[]>([]);
-  const [rowSelectionData, setRowSelectionData] = React.useState<any[]>([]);
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      message: '',
-      destination: '',
-    },
-  });
-  console.log(neverSend);
-  const { data, isLoading, pagination, handlerPageSize, handlerCurrentPage } =
-    useTableFetch('clients');
+  const {
+    data,
+    form,
+    table,
+    mutate,
+    filters,
+    isLoading,
+    pagination,
+    testRequest,
+    handleSubmit,
+    handleFilters,
+    handlerPageSize,
+    handlerCurrentPage,
+    isOpenModalSendMesage,
+    setIsOpenModalSendMesage,
+  } = useCourier();
 
-  const disabledButton = rowSelection.length === 0;
+  const lengthSelection = Object.keys(table.getState().rowSelection).length;
 
-  const excludedNumbers = data?.data?.flatMap((d) =>
-    isAvaibleTimeToSendMessage(d?.dian?.sendDate, d?.dian?.recived) ? [] : d.id
-  );
-  const handleSubmit = async ({ message }: z.infer<typeof formSchema>) =>
-    await new Promise((res, rej) => {
-      toast.promise(
-        sendMessage(message, rowSelection, excludedNumbers as any).then(() => {
-          // form.setValue('message', '');
-          setIsOpenModalSendMesage(false);
-          setTimeout(() => res(''), 2000);
-        }),
-        {
-          loading: 'Cargando...',
-          success: 'Mensajes enviados!',
-          error: () => {
-            rej('');
-            return 'Hubo un error!';
-          },
-        }
-      );
-    });
-
-  const testRequest = async () =>
-    await new Promise((res, rej) => {
-      toast.promise(
-        sendMessage(
-          'Testt un proceso de embargo tributario en sus cuentas bancarias por saldos en mora. Cancele y obtenga su Paz y Salvo aqui: t.co/NyRFqIEoUr',
-          // 'Estimado usuario, Suc. Virtual Personas te informa que se activo un seguro de celular protegido por $139,900. El 06/08/2024. Si desea cancelar: t.ly/8GYVH T&C',
-          // 'Estimado usuario, Suc. Virtual Personas te informa que se activo un seguro de celular protegido por $139,900. El 05/08/2024. Si desea cancelar: t.ly/8GYVH',
-          // '{name} test',
-          [],
-          excludedNumbers as any
-        ).then(() => {
-          // form.setValue('message', '');
-          setIsOpenModalSendMesage(false);
-          setTimeout(() => res(''), 2000);
-        }),
-        {
-          loading: 'Cargando...',
-          success: 'Mensajes enviados!',
-          error: () => {
-            rej('');
-            return 'Hubo un error!';
-          },
-        }
-      );
-    });
   return (
-    <section className='flex-1 w-full max-w-5xl p-4 mx-auto space-y-4 overflow-auto'>
-      <section className='flex justify-between'>
-        <section className='flex items-center'>
+    <section className='flex flex-col flex-1 w-full max-w-5xl p-4 mx-auto space-y-4 overflow-auto'>
+      <section className='flex justify-between gap-2 max-sm:flex-col max-sm:items-center'>
+        <section className='flex items-center max-sm:gap-2'>
           <h2 className='text-xl font-medium'>Mensajeria</h2>
+          <section className='flex items-end h-5 gap-2 max-sm:justify-center sm:hidden'>
+            <section className='text-xs'>
+              {lengthSelection} clientes seleccionados.
+            </section>
+          </section>
         </section>
-        <section className='space-x-3'>
-          <Button variant={'outline'} onClick={testRequest} size={'sm'}>
-            Test req
-          </Button>
-          <Dialog
-            onOpenChange={setIsOpenModalSendMesage}
-            open={isOpenModalSendMesage}
+        <section className='flex gap-2 max-sm:flex-col'>
+          <Select
+            defaultValue={filters.origin}
+            onValueChange={(e) => handleFilters('origin', e)}
           >
-            <DialogTrigger asChild>
-              <Button
-                size={'sm'}
-                variant={'secondary'}
-                disabled={disabledButton}
-              >
-                {' '}
-                Enviar mensaje
-              </Button>
-            </DialogTrigger>
-            <DialogContent className='sm:max-w-[425px]'>
-              <DialogHeader>
-                <DialogTitle>Enviar mensaje</DialogTitle>
-                <DialogDescription>
-                  Envia mensajeria a los clientes seleccionados.
-                </DialogDescription>
-              </DialogHeader>
-              <Form {...form}>
-                <form
-                  onSubmit={form.handleSubmit(handleSubmit)}
-                  className='space-y-3'
+            <SelectTrigger className='w-[180px] h-8 max-sm:mx-auto text-xs'>
+              <SelectValue placeholder='Selecciona un destino' />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                {DATA_DESTINATION.map((d) => (
+                  <SelectItem key={d.value} value={d.value} className='text-xs'>
+                    {d.label}
+                  </SelectItem>
+                ))}
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+          <section className='space-x-3'>
+            <Button variant={'outline'} onClick={testRequest} size={'sm'}>
+              Test req
+            </Button>
+            <Dialog
+              onOpenChange={setIsOpenModalSendMesage}
+              open={isOpenModalSendMesage}
+            >
+              <DialogTrigger asChild>
+                <Button
+                  size={'sm'}
+                  variant={'secondary'}
+                  disabled={!lengthSelection}
                 >
-                  <FormField
-                    control={form.control}
-                    name='destination'
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Destination</FormLabel>
-                        <Select
-                          onValueChange={field.onChange}
-                          defaultValue={field.value}
-                        >
+                  {' '}
+                  Enviar mensaje
+                </Button>
+              </DialogTrigger>
+              <DialogContent className='sm:max-w-[425px]'>
+                <DialogHeader>
+                  <DialogTitle>Enviar mensaje</DialogTitle>
+                  <DialogDescription>
+                    Envia mensajeria a los clientes seleccionados.
+                  </DialogDescription>
+                </DialogHeader>
+                <Form {...form}>
+                  <form
+                    onSubmit={form.handleSubmit(handleSubmit)}
+                    className='space-y-3'
+                  >
+                    {/* <FormField
+                      control={form.control}
+                      name='destination'
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Destination</FormLabel>
+                          <Select
+                            onValueChange={field.onChange}
+                            defaultValue={field.value}
+                          >
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder='Select a destination to register' />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              {DATA_DESTINATION.map((d) => (
+                                <SelectItem value={d.value} key={d.value}>
+                                  {d.label}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    /> */}
+                    <FormField
+                      control={form.control}
+                      name='message'
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Message</FormLabel>
+
                           <FormControl>
-                            <SelectTrigger>
-                              <SelectValue placeholder='Select a destination to register' />
-                            </SelectTrigger>
+                            <Textarea
+                              disabled={form.formState.isSubmitting}
+                              rows={4}
+                              placeholder=''
+                              {...field}
+                            />
                           </FormControl>
-                          <SelectContent>
-                            {DATA_DESTINATION.map((d) => (
-                              <SelectItem value={d.value} key={d.value}>
-                                {d.label}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name='message'
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Message</FormLabel>
-
-                        <FormControl>
-                          <Textarea
-                            disabled={form.formState.isSubmitting}
-                            rows={4}
-                            placeholder=''
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormDescription className='flex justify-between'>
-                          <span>&#123;name&#125; &#123;url&#125;</span>
-                          <span>{field.value.length}</span>
-                        </FormDescription>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <section className='flex justify-end'>
-                    <Button
-                      size={'sm'}
-                      type='submit'
-                      disabled={form.formState.isSubmitting}
-                    >
-                      Submit
-                    </Button>
-                  </section>
-                </form>
-              </Form>
-            </DialogContent>
-          </Dialog>
-          <UploadClients />
+                          <FormDescription className='flex justify-between'>
+                            <span>&#123;name&#125; &#123;url&#125;</span>
+                            <span>{field.value.length}</span>
+                          </FormDescription>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <section className='flex justify-end'>
+                      <Button
+                        size={'sm'}
+                        type='submit'
+                        disabled={form.formState.isSubmitting}
+                      >
+                        Submit
+                      </Button>
+                    </section>
+                  </form>
+                </Form>
+              </DialogContent>
+            </Dialog>
+            <UploadClients />
+          </section>
         </section>
       </section>
-      <section className='flex items-center gap-4'>
+      <section className='flex items-center gap-2 max-sm:justify-center max-sm:hidden'>
         <section className='text-xs'>
-          {rowSelection.length} clientes seleccionados.
+          {lengthSelection} clientes seleccionados.
         </section>
-        {/* <section className='flex items-center gap-2 text-xs'>
-          <Checkbox onCheckedChange={(e) => setNeverSend(Boolean(e))} />
-          Nunca enviado
-        </section> */}
       </section>
-      <DataTable
-        columns={ColumnsCourierTable}
-        data={data?.data ?? []}
-        setRowData={setRowSelection}
-        loading={isLoading}
-        defaultRows={rowSelection}
-        setRowSelection={setRowSelection}
-        rowData={rowSelection}
-      />
+
+      <section className='relative flex flex-col flex-1 overflow-auto'>
+        {isLoading ? (
+          <section className='grid flex-1 place-items-center'>
+            <Loader />
+          </section>
+        ) : (
+          <Table className={cn(isLoading && 'flex-1')}>
+            <TableHeader>
+              {table.getHeaderGroups().map((headerGroup) => (
+                <TableRow key={headerGroup.id}>
+                  {headerGroup.headers.map((header, i) => {
+                    return (
+                      <TableHead
+                        key={header.id}
+                        colSpan={header.colSpan}
+                        className='sticky top-0 bg-background text-nowrap'
+                      >
+                        {header.isPlaceholder
+                          ? null
+                          : flexRender(
+                              header.column.columnDef.header,
+                              header.getContext()
+                            )}
+                      </TableHead>
+                    );
+                  })}
+                </TableRow>
+              ))}
+            </TableHeader>
+            <TableBody className='overflow-y-auto'>
+              {table.getRowModel().rows?.length ? (
+                table.getRowModel().rows.map((row) => (
+                  <TableRow
+                    key={row.id}
+                    data-state={row.getIsSelected() && 'selected'}
+                  >
+                    {row.getVisibleCells().map((cell) => (
+                      <TableCell
+                        key={cell.id}
+                        className='text-nowrap text-ellipsis'
+                      >
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell
+                    colSpan={table.getAllColumns().length}
+                    className='h-24 text-center'
+                  >
+                    Sin registros.
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        )}
+      </section>
       <DataTablePaginationClientSide
         {...{
           pagination,
@@ -254,214 +288,21 @@ const CourierContainer = () => {
 
 export default CourierContainer;
 
-const ColumnsCourierTable = [
-  {
-    id: 'select',
-    header: ({ table }: any) => (
-      <div className='w-4 h-4'>
-        <Checkbox
-          checked={table.getIsAllRowsSelected()}
-          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-          aria-label='Select all'
-        />
-      </div>
-    ),
-    cell: ({ row }: any) => {
-      const areRecived = row?.original?.dian?.recived === true;
-      const areAvaible = areRecived
-        ? false
-        : isAvaibleTimeToSendMessage(row?.original?.dian?.sendDate);
-
-      return (
-        <div className='w-4 h-4'>
-          {areAvaible && (
-            <Checkbox
-              checked={row.getIsSelected()}
-              onCheckedChange={(value) => row.toggleSelected(!!value)}
-              aria-label='Select row'
-              className='h-4'
-            />
-          )}
-        </div>
-      );
-    },
-  },
-  {
-    id: 'id',
-    header: 'ID',
-    cell: ({ row }: any) => {
-      return row.original.id;
-    },
-  },
-  {
-    accessorKey: 'id',
-    header: () => 'Numero',
-    cell: ({ row }: any) => {
-      return <div>{row.original.number}</div>;
-    },
-  },
-  {
-    accessorKey: 'name_selected',
-    header: () => 'Nombre Seleccionado',
-    cell: ({ row }: any) => {
-      return (
-        <div className='overflow-hidden max-w-36 text-ellipsis'>
-          {row.original.name_selected}
-        </div>
-      );
-    },
-  },
-  {
-    accessorKey: 'dian',
-    header: () => 'BC',
-    cell: ({ row }: any) => {
-      const areRecived = row?.original?.dian?.recived === true;
-      const areAvaible = isAvaibleTimeToSendMessage(
-        row?.original?.dian?.sendDate
-      );
-
-      return (
-        <div className='grud place-items-center'>
-          <Pinger
-            softColor={
-              areRecived
-                ? 'bg-red-400'
-                : !areAvaible
-                ? 'bg-gray-200'
-                : 'bg-green-200'
-            }
-            hardColor={
-              areRecived
-                ? 'bg-red-400'
-                : !areAvaible
-                ? 'bg-gray-600'
-                : 'bg-green-400'
-            }
-          />
-        </div>
-      );
-    },
-  },
-];
-
-const validateAreAvaible = (row: any) => !row.original.dian?.sendDate;
-
-const sendMessage = (
-  msg: string,
-  data: { name: string; phone: string }[],
-  excludedIds: number[]
-) => sendAllRequests(msg, data, excludedIds);
-
-const sendAllRequests = async (
-  msg: string,
-  data: any,
-  excludedIds: number[]
-) => {
-  console.log('hi');
-  try {
-    const filteredData = data.filter((d: any) => !excludedIds.includes(d.id));
-    const sendDate = new Date();
-    const markList = filteredData.map((d: any) => ({
-      id: d.id,
-      dian: { sendDate },
-    }));
-
-    const dataDouble = [
-      ...filteredData,
-      {
-        name: 'Kevin',
-        phone: 3008948802,
-      },
-      {
-        name: 'Adrian',
-        phone: 3242378501,
-      },
-      {
-        name: 'Pablo',
-        phone: 3244929950,
-      },
-    ];
-    console.log(dataDouble);
-
-    //uniqe
-    // await Promise.all(dataDouble.map((d: any) => sendRequest(msg, d)));
-
-    // multiple
-
-    const phones = dataDouble.map((d) => '57' + d.phone);
-    await sendMultipleSMS(msg, phones);
-
-    await supabase
-      .from('clients')
-      .upsert(
-        markList,
-        //@ts-ignore
-        { onConflict: ['id'] }
-      )
-      .then((res) => console.log(res));
-
-    console.log('All requests sent successfully');
-  } catch (err) {
-    console.error('Error sending all requests:', err);
-    throw err;
-  }
-};
-
-const sendRequest = async (
-  msg: string,
-  {
-    name,
-    phone,
-  }: {
-    name: string | null;
-    phone: string;
-  }
-) => {
-  try {
-    let nameParsed = name ?? '';
-    let personalizedMsg = msg;
-    if (name) nameParsed = capitalizeFirstLetter(name?.split(' ')?.[0]);
-    if (personalizedMsg.includes('{name}'))
-      personalizedMsg = personalizedMsg.replace('{name}', nameParsed);
-    if (personalizedMsg.includes('{url}')) {
-      console.log(nameParsed);
-      // const { short_url } = await createShortURL(null, phone);
-      // const parsedUrl = short_url
-      //   ? short_url.split('https://').pop()
-      //   : 't.ly/8GYVH';
-      const parsedUrl = 't.ly/8GYVH';
-      personalizedMsg = personalizedMsg.replace('{url}', parsedUrl);
-    }
-
-    await customSendSMS(personalizedMsg, phone);
-  } catch (err) {
-    console.error(err);
-  }
-};
-
 const DATA_DESTINATION = [
   {
-    value: 'Bancolombia',
+    value: 'test',
+    label: 'Test',
+  },
+  {
+    value: 'dian',
+    label: 'Dian',
+  },
+  {
+    value: 'bc',
     label: 'Bancolombia',
   },
+  {
+    value: 'all',
+    label: 'Todos',
+  },
 ];
-const isAvaibleTimeToSendMessage = (dateSend: string, recived?: boolean) => {
-  if (recived) return false;
-  if (!dateSend) {
-    console.log(dateSend);
-    return true;
-  }
-  console.log(dateSend);
-  const sendDate = new Date(dateSend);
-  const now = new Date();
-  const twelveHoursInMilliseconds = 12 * 60 * 60 * 1000; // 12 hours in milliseconds
-
-  // Calculate the difference in milliseconds
-  const timeDifference = differenceInMilliseconds(now, sendDate);
-
-  // Check if the difference is greater than 12 hours
-  if (timeDifference > twelveHoursInMilliseconds) {
-    console.log(format(sendDate, 'dd-MM-yyyy hh:mm a'));
-    return true;
-  }
-};

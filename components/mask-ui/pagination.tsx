@@ -33,17 +33,11 @@ const DataTablePaginationClientSide = (props: IProps) => {
   const totalPage = Math.ceil(total / limit);
   const isSelectedRows = typeof props.selectedRows !== 'undefined';
   return (
-    <div className='flex items-center justify-between w-full px-2'>
+    <div className='flex items-center justify-between w-full gap-2 px-2 max-sm:flex-col-reverse'>
       <div className='flex-1 text-sm text-muted-foreground'>
-        {isSelectedRows ? (
-          <>
-            Seleccionando {props.selectedRows} de {total} registro(s).
-          </>
-        ) : (
-          <>{total} registro(s).</>
-        )}
+        {total} registro(s).
       </div>
-      <div className='flex-1'></div>
+
       <div className='flex items-center space-x-6 lg:space-x-8'>
         <div className='flex items-center space-x-2'>
           <p className='text-sm '>Filas por página</p>
@@ -63,7 +57,7 @@ const DataTablePaginationClientSide = (props: IProps) => {
             </SelectContent>
           </Select>
         </div>
-        <div className='flex w-[100px] items-center justify-center text-sm '>
+        <div className='flex w-[110px] items-center justify-center text-sm '>
           Página {page + 1} de {totalPage ? totalPage : 1}
         </div>
         <div className='flex items-center space-x-2'>

@@ -25,8 +25,10 @@ const LayoutComponent = ({
       <main className='flex flex-col w-full'>
         <Searchbar />
         <AppShellContent>
-          <section className='overflow-auto'>
-            <div className='relative overflow-auto'>{children}</div>
+          <section className='flex flex-col flex-1 overflow-auto'>
+            <div className='relative flex flex-col flex-1 overflow-auto'>
+              {children}
+            </div>
           </section>
         </AppShellContent>
       </main>

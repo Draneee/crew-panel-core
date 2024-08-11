@@ -1,3 +1,4 @@
+import { INIT_STATE_PAGINATION } from '@/consts/pagination';
 import { usePagination } from '@/hooks/use-pagination';
 import { supabase } from '@/lib/supabase/client';
 import React from 'react';
@@ -8,12 +9,13 @@ const useTableFetch = (keyURL: string) => {
 
   const { handlerCurrentPage, handlerPageSize } = usePagination(setPagination);
 
-  const { data, isLoading } = useSWR([keyURL, pagination], () =>
+  const { data, isLoading, mutate } = useSWR([keyURL, pagination], () =>
     fetcher(keyURL, pagination)
   );
 
   return {
     data,
+    mutate,
     isLoading,
     pagination,
     handlerCurrentPage,
@@ -22,11 +24,6 @@ const useTableFetch = (keyURL: string) => {
 };
 
 export default useTableFetch;
-
-const INIT_STATE_PAGINATION = {
-  limit: 25,
-  skip: 0,
-};
 
 const fetcher = async (
   key: string,

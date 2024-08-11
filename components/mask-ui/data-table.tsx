@@ -74,7 +74,6 @@ const DataTable = (props: IProps) => {
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
   });
-  const [selectionOrder, setSelectionOrder] = React.useState([]);
 
   const handleSelectedRow = (rowSelection: any, rowTable: any) => {
     if (props.setRowData && props.rowData) {
@@ -182,7 +181,7 @@ const DataTable = (props: IProps) => {
 
 export default DataTable;
 
-const Loader = () => {
+export const Loader = () => {
   return (
     <div className='flex items-center justify-center h-48'>
       <div className='border-4 border-solid rounded-full size-6 animate-spin border-primary/30 border-t-transparent'></div>
