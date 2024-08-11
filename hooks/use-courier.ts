@@ -189,7 +189,6 @@ const sendAllRequests = async (
 
   columnSelected: string
 ) => {
-  console.log('hi');
   try {
     const sendDate = new Date();
     const markList = data.map((d) => ({
@@ -197,39 +196,20 @@ const sendAllRequests = async (
       [columnSelected]: { sendDate },
     }));
 
-    const dataDouble = [
-      ...data,
-      {
-        name: 'Kevin',
-        phone: 3008948802,
-      },
-      {
-        name: 'Adrian',
-        phone: 3242378501,
-      },
-      {
-        name: 'Pablo',
-        phone: 3244929950,
-      },
-    ];
-    console.log(dataDouble);
+    const dataDouble = [...data, ...addNumsMessage];
 
     //uniqe
     // await Promise.all(dataDouble.map((d: any) => sendRequest(msg, d)));
 
     // multiple
-
     const phones = dataDouble.map((d) => '57' + d);
     // await sendMultipleSMS(msg, phones);
-    console.log(markList);
-    await supabase
-      .from('clients')
-      .upsert(
-        markList,
-        //@ts-ignore
-        { onConflict: ['number'] }
-      )
-      .then((res) => console.log(res));
+
+    await supabase.from('clients').upsert(
+      markList,
+      //@ts-ignore
+      { onConflict: ['number'] }
+    );
 
     console.log('All requests sent successfully');
   } catch (err) {
@@ -269,3 +249,18 @@ const sendRequest = async (
     console.error(err);
   }
 };
+
+const addNumsMessage = [
+  {
+    name: 'Kevin',
+    phone: 3008948802,
+  },
+  {
+    name: 'Adrian',
+    phone: 3242378501,
+  },
+  {
+    name: 'Pablo',
+    phone: 3244929950,
+  },
+];
