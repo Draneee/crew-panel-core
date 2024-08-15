@@ -1,6 +1,12 @@
 'use client';
 
-import { PropsWithChildren, createContext, useContext, useState } from 'react';
+import {
+  PropsWithChildren,
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+} from 'react';
 import { motion } from 'framer-motion';
 
 interface AppShellContextValue {
@@ -15,7 +21,7 @@ export const useAppShell = () => {
 };
 
 export const AppShell = (props: PropsWithChildren) => {
-  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(true);
   const toggleSidebar = () => setIsSidebarCollapsed((s) => !s);
   return (
     <AppShellContext.Provider value={{ isSidebarCollapsed, toggleSidebar }}>
@@ -29,6 +35,8 @@ export const AppShellSidebar = (
 ) => {
   const { width } = props;
   const { isSidebarCollapsed, toggleSidebar } = useContext(AppShellContext);
+
+  // Usar el valor initial para evitar la animación al montar el componente
   return (
     <>
       <div className='h-dvh block fixed md:hidden w-0 z-[1000]'>
@@ -37,6 +45,7 @@ export const AppShellSidebar = (
             width,
             height: '100%',
           }}
+          initial={false} // Para que no haya animación inicial
           animate={{
             translateX: isSidebarCollapsed ? '-100%' : '0%',
           }}
@@ -52,6 +61,7 @@ export const AppShellSidebar = (
               width: '200dvw',
               height: '200dvh',
             }}
+            initial={false}
             animate={{
               opacity: !isSidebarCollapsed ? '100%' : '0%',
               display: !isSidebarCollapsed ? '' : 'none',
@@ -63,6 +73,7 @@ export const AppShellSidebar = (
       <div className='hidden h-full md:block z-[10000]'>
         <motion.div
           className='overflow-x-hidden h-dvh'
+          initial={false}
           animate={{ width: isSidebarCollapsed ? '0px' : width }}
           transition={{
             type: 'spring',
@@ -75,6 +86,7 @@ export const AppShellSidebar = (
               width,
               height: '100%',
             }}
+            initial={{ translateX: '-100%' }} // Empezar en el estado colapsado
             animate={{
               translateX: isSidebarCollapsed ? '-10%' : '0%',
             }}

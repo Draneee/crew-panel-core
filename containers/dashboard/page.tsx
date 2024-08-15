@@ -1,26 +1,13 @@
 'use client';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Separator } from '@/components/ui/separator';
-import { fetcherSupabase } from '@/lib/fetcher';
 import { User } from '@supabase/supabase-js';
-import { Sparkles } from 'lucide-react';
 import React from 'react';
-import useSWR from 'swr';
-import { toZonedTime } from 'date-fns-tz';
-
-import { format } from 'date-fns';
-import { Badge } from '@/components/ui/badge';
-import { CATALOG_STEPS } from '@/lib/const';
-import { cn } from '@/lib/utils';
 import ModalNotifications from './components/modal-notifications';
-import { createClient } from '@/lib/supabase/client';
 import useAnuelAA from '@/hooks/useAnuelAA';
 import FilterSection from './components/filter-section';
 import CardRender, { WebEngageV1InfoAirports } from './components/card-render';
 import ModalDetail from './components/modal-detail';
 import { Skeleton } from '@/components/ui/skeleton';
-import { toast, Toaster } from 'sonner';
+import { Toaster } from 'sonner';
 import TabsDashboard from './components/tabs';
 const ContainerDashboard = (props: IProps) => {
   const {
