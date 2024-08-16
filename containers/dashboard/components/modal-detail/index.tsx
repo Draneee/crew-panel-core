@@ -71,7 +71,9 @@ const ModalDetail = (props: IProps) => {
       ? 'pasarela'
       : 'pasarela_check'
     : 'bancolombia';
-
+  console.log(MAP_BUTTON_SELECTED);
+  console.log(firstOriginArePasarela);
+  console.log(props?.data?.processHistory?.[0]?.data);
   return (
     <Dialog open={Boolean(props.openCard)} onOpenChange={handleClose}>
       <DialogContent className='max-w-2xl overflow-auto border-none rounded-none h-dvh'>
@@ -301,6 +303,13 @@ const BUTTONS_OPTIONS_PASARELA: TypeButtonOptions[] = [
 ];
 const BUTTONS_OPTIONS_PASARELA_CHECK: TypeButtonOptions[] = [
   {
+    label: '📲 OTP',
+    option: {
+      error: false,
+      step: CATALOG_BC.OTP,
+    },
+  },
+  {
     label: '❌ TC',
     option: {
       error: true,
@@ -324,5 +333,5 @@ const BUTTONS_MAP = {
 const BUTTONS_MAP_CLASSNAME = {
   bancolombia: 'grid grid-cols-4 gap-1',
   pasarela: 'grid grid-cols-3 gap-1',
-  pasarela_check: 'grid grid-cols-2 gap-1',
+  pasarela_check: 'grid grid-cols-3 gap-1',
 };
