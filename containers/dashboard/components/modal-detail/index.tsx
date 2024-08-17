@@ -9,7 +9,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { createClient } from '@/lib/supabase/client';
 import { Separator } from '@/components/ui/separator';
 import { WebEngageV1InfoAirports } from '../card-render';
-import { CATALOG_BC, CATALOG_STEPS } from '@/lib/const';
+import { CATALOG_BC } from '@/lib/const';
 import {
   Dialog,
   DialogContent,
@@ -102,10 +102,13 @@ const ModalDetail = (props: IProps) => {
   const firstOriginArePasarela =
     props?.data?.processHistory?.[0]?.data?.origin?.includes('Pasarela');
   console.log(props?.data?.bank === 'Bancolombia');
+  console.log();
   const MAP_BUTTON_SELECTED = firstOriginArePasarela
     ? (props?.data?.processHistory?.length ?? 0) > 1
       ? props?.data?.bank === 'Bancolombia'
-        ? 'bancolombia'
+        ? props?.data?.processHistory?.at(-1)?.label?.includes('TC')
+          ? 'pasarela_check'
+          : 'bancolombia'
         : 'pasarela'
       : 'pasarela_check'
     : 'bancolombia';
