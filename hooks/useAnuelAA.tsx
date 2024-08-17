@@ -18,6 +18,7 @@ const useAnuelAA = () => {
   const [search, setSearch] = React.useState('');
   const [openCard, setOpenCard] = React.useState<number>();
   const isLiveTabSelected = tabSelected === tabLive;
+  const isFavorite = tabSelected === 'favorite';
 
   const fetcher = async (url: string) => {
     let query = supabase
@@ -28,6 +29,8 @@ const useAnuelAA = () => {
 
     if (isLiveTabSelected) {
       query = query.not('currentStep->>step', 'in', '(0)');
+    } else if (isFavorite) {
+      query = query.or('favorite.eq.true');
     } else {
       query = query.or('currentStep->>step.eq.0');
     }
