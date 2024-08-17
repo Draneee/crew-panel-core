@@ -31,6 +31,7 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { mutate } from 'swr';
 type openCardInfo = WebEngageV1InfoAirports | undefined;
 interface IProps {
   data: openCardInfo;
@@ -60,7 +61,8 @@ const ModalDetail = (props: IProps) => {
       .update({
         deleted: true,
       })
-      .eq('id', props.data?.id);
+      .eq('id', props.data?.id)
+      .then(() => mutate('panel'));
     props.setOpenCard(undefined);
   };
   const handleFavorite = async () => {
@@ -69,7 +71,8 @@ const ModalDetail = (props: IProps) => {
       .update({
         favorite: !props?.data?.favorite,
       })
-      .eq('id', props.data?.id);
+      .eq('id', props.data?.id)
+      .then(() => mutate('panel'));
 
     props.setOpenCard(undefined);
   };

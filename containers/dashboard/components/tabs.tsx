@@ -24,7 +24,7 @@ const TabsDashboard = (props: IProps) => {
   return (
     <header
       className={cn(
-        'fixed bottom-0 z-10 grid h-12 grid-cols-3 mx-auto flex-1 bg-[#000]',
+        'fixed bottom-0 z-[100] grid h-12 grid-cols-3 mx-auto flex-1 bg-[#000]',
         isBrowser ? 'h-9' : 'h-12'
       )}
       style={{

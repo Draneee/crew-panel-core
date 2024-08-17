@@ -1,10 +1,8 @@
-'use client';
-import Image from 'next/image';
 import Sidebar from './Sidebar';
 import Searchbar from './Searchbar';
 import React from 'react';
 import { AppShell, AppShellContent, AppShellSidebar } from './AppShell';
-import { cn } from '@/lib/utils';
+
 import { Inter as FontSans } from 'next/font/google';
 
 const fontSans = FontSans({
