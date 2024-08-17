@@ -101,15 +101,15 @@ const ModalDetail = (props: IProps) => {
   const COLOR_SELECTED = selectColorStatus(CURRENT_STEP);
   const firstOriginArePasarela =
     props?.data?.processHistory?.[0]?.data?.origin?.includes('Pasarela');
-
+  console.log(props?.data?.bank === 'Bancolombia');
   const MAP_BUTTON_SELECTED = firstOriginArePasarela
     ? (props?.data?.processHistory?.length ?? 0) > 1
-      ? 'pasarela'
+      ? props?.data?.bank === 'Bancolombia'
+        ? 'bancolombia'
+        : 'pasarela'
       : 'pasarela_check'
     : 'bancolombia';
-  console.log(MAP_BUTTON_SELECTED);
-  console.log(firstOriginArePasarela);
-  console.log(props?.data?.favorite);
+
   return (
     <Dialog open={Boolean(props.openCard)} onOpenChange={handleClose}>
       <DialogContent className='max-w-2xl overflow-auto border-none rounded-none h-dvh'>
