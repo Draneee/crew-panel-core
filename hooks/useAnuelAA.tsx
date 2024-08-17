@@ -9,7 +9,6 @@ import { toast } from 'sonner';
 import { TABS } from '@/containers/dashboard/components/tabs';
 
 export const URL_FETCH_DASHBOARD = '/rest/v1/panel?select=*&order=id.desc';
-const filterTest = [1, 2, 3, 4, 5, 6, 7];
 const tabLive = TABS['En vivo'].value;
 const useAnuelAA = () => {
   const info = useInfoGlobally();
@@ -29,10 +28,14 @@ const useAnuelAA = () => {
 
     if (isLiveTabSelected) {
       query = query.not('currentStep->>step', 'in', '(0)');
-    } else if (isFavorite) {
-      query = query.or('favorite.eq.true');
     } else {
       query = query.or('currentStep->>step.eq.0');
+    }
+
+    if (isFavorite) {
+      query = query.or('favorite.eq.true');
+    } else {
+      query = query.or('favorite.eq.false');
     }
 
     const { data, error } = await query;

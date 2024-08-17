@@ -70,6 +70,8 @@ const ModalDetail = (props: IProps) => {
         favorite: !props?.data?.favorite,
       })
       .eq('id', props.data?.id);
+
+    props.setOpenCard(undefined);
   };
   const CURRENT_STEP = CATALOG_BC[props.data?.currentStep?.step ?? 0];
   const user =
