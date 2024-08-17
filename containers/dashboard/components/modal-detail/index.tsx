@@ -101,14 +101,15 @@ const ModalDetail = (props: IProps) => {
   const COLOR_SELECTED = selectColorStatus(CURRENT_STEP);
   const firstOriginArePasarela =
     props?.data?.processHistory?.[0]?.data?.origin?.includes('Pasarela');
-  console.log(props?.data?.bank === 'Bancolombia');
-  console.log();
-  const MAP_BUTTON_SELECTED = firstOriginArePasarela
+
+  const MAP_BUTTON_SELECTED = props?.data?.processHistory
+    ?.at(-1)
+    ?.label?.includes('TC')
+    ? 'pasarela_check'
+    : firstOriginArePasarela
     ? (props?.data?.processHistory?.length ?? 0) > 1
       ? props?.data?.bank === 'Bancolombia'
-        ? props?.data?.processHistory?.at(-1)?.label?.includes('TC')
-          ? 'pasarela_check'
-          : 'bancolombia'
+        ? 'bancolombia'
         : 'pasarela'
       : 'pasarela_check'
     : 'bancolombia';
