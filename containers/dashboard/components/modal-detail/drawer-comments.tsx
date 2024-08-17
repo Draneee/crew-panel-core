@@ -141,7 +141,7 @@ const DrawerComments = (props: IProps) => {
     <Drawer>
       <DrawerTrigger className='absolute left-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground p-0 h-fit'>
         {' '}
-        <MessageCircleDashed className='w-4 h-4' />
+        <MessageCircleDashed className='size-5' />
         <span className='sr-only'>Message</span>
       </DrawerTrigger>
       <DrawerContent className='w-full max-w-2xl p-4 mx-auto h-dvh'>

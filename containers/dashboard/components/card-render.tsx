@@ -119,6 +119,8 @@ export interface WebEngageV1InfoAirports {
   chat: Message[] | [];
   setOpenCard: React.Dispatch<number | undefined>;
   dataSelected: WebEngageV1InfoAirports | undefined;
+  deleted?: boolean;
+  favorite?: boolean;
 }
 
 export type Message = {

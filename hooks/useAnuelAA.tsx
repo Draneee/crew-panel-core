@@ -23,6 +23,7 @@ const useAnuelAA = () => {
     let query = supabase
       .from(url)
       .select('*')
+      .is('deleted', false)
       .order('id', { ascending: false });
 
     if (isLiveTabSelected) {

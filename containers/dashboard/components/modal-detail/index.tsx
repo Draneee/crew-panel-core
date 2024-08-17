@@ -1,7 +1,7 @@
 import React from 'react';
 import { User } from '@supabase/supabase-js';
 import { Badge } from '@/components/ui/badge';
-import { CircleUserRound } from 'lucide-react';
+import { CircleUserRound, Heart, HeartCrack, Trash2 } from 'lucide-react';
 import DrawerComments from './drawer-comments';
 import { Button } from '@/components/ui/button';
 import { cn, selectColorStatus } from '@/lib/utils';
@@ -17,6 +17,20 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuPortal,
+  DropdownMenuSeparator,
+  DropdownMenuShortcut,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 type openCardInfo = WebEngageV1InfoAirports | undefined;
 interface IProps {
   data: openCardInfo;
@@ -36,10 +50,27 @@ interface TypeButtonOptions {
 [];
 const ModalDetail = (props: IProps) => {
   const supabase = createClient();
-  console.log(props.openCard);
+  console.log(props.data?.id);
 
   const [showMessages, setShowMessages] = React.useState(false);
   const handleClose = () => props.setOpenCard(undefined);
+  const handleDelete = async () => {
+    await supabase
+      .from('panel')
+      .update({
+        deleted: true,
+      })
+      .eq('id', props.data?.id);
+    props.setOpenCard(undefined);
+  };
+  const handleFavorite = async () => {
+    await supabase
+      .from('panel')
+      .update({
+        favorite: !props?.data?.favorite,
+      })
+      .eq('id', props.data?.id);
+  };
   const CURRENT_STEP = CATALOG_BC[props.data?.currentStep?.step ?? 0];
   const user =
     props.data?.processHistory?.at(0)?.data.username ??
@@ -73,20 +104,46 @@ const ModalDetail = (props: IProps) => {
     : 'bancolombia';
   console.log(MAP_BUTTON_SELECTED);
   console.log(firstOriginArePasarela);
-  console.log(props?.data?.processHistory?.[0]?.data);
+  console.log(props?.data?.favorite);
   return (
     <Dialog open={Boolean(props.openCard)} onOpenChange={handleClose}>
       <DialogContent className='max-w-2xl overflow-auto border-none rounded-none h-dvh'>
-        <DrawerComments {...props} />
+        {/* <DrawerComments {...props} /> */}
 
         <section className='space-y-10'>
           <DialogHeader>
             <header>
               <DialogTitle className='grid text-xl font-normal leading-6 place-items-center'>
-                <section className='flex gap-2'>
-                  <CircleUserRound className='size-[24px] text-gray-300' />
-                  <p className='leading-[25px]'>{user}</p>
-                </section>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant='ghost' className='-mt-3'>
+                      <section className='flex gap-2'>
+                        <CircleUserRound className='size-[24px] text-gray-300' />
+                        <p className='leading-[25px]'>{user}</p>
+                      </section>
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent className='w-56'>
+                    <DropdownMenuGroup>
+                      <DropdownMenuItem onClick={handleFavorite}>
+                        {props?.data?.favorite ? (
+                          <HeartCrack className='w-4 h-4 mr-2' />
+                        ) : (
+                          <Heart className='w-4 h-4 mr-2' />
+                        )}
+                        <span>
+                          {props?.data?.favorite ? 'Desfavorito' : 'Favorito'}
+                        </span>
+                        <DropdownMenuShortcut>⇧⌘H</DropdownMenuShortcut>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={handleDelete}>
+                        <Trash2 className='w-4 h-4 mr-2' />
+                        <span>Eliminar</span>
+                        <DropdownMenuShortcut>⇧⌘E</DropdownMenuShortcut>
+                      </DropdownMenuItem>
+                    </DropdownMenuGroup>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </DialogTitle>
               <Separator className='mt-1 mb-1' />
             </header>

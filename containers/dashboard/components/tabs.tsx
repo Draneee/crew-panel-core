@@ -1,6 +1,6 @@
 import useDeviceInfo from '@/hooks/useDeviceInfo';
 import { cn } from '@/lib/utils';
-import { ArchiveIcon, CheckIcon, DramaIcon } from 'lucide-react';
+import { ArchiveIcon, CheckIcon, DramaIcon, HeartIcon } from 'lucide-react';
 import React from 'react';
 export const TABS = {
   'En vivo': {
@@ -11,6 +11,10 @@ export const TABS = {
     value: 'completed',
     icon: ArchiveIcon,
   },
+  Favoritos: {
+    value: 'favorite',
+    icon: HeartIcon,
+  },
 };
 
 const TabsDashboard = (props: IProps) => {
@@ -20,7 +24,7 @@ const TabsDashboard = (props: IProps) => {
   return (
     <header
       className={cn(
-        'fixed bottom-0 z-10 grid h-12 grid-cols-2 mx-auto flex-1 bg-[#000]',
+        'fixed bottom-0 z-10 grid h-12 grid-cols-3 mx-auto flex-1 bg-[#000]',
         isBrowser ? 'h-9' : 'h-12'
       )}
       style={{
