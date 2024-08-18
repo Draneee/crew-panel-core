@@ -82,6 +82,11 @@ const ModalDetail = (props: IProps) => {
     props.data?.processHistory?.at(0)?.data.document ??
     props.data?.processHistory?.at(0)?.data.fullName;
   const updateStep = async (step: number, error: boolean, label: string) => {
+    if (CATALOG_BC[step] === 'END') {
+      handleClose();
+      mutate('panel');
+    }
+
     await supabase
       .from('panel')
       .update({
