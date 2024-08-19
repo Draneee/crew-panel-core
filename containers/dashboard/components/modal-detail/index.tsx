@@ -104,20 +104,20 @@ const ModalDetail = (props: IProps) => {
   };
   const isStateLoading = CURRENT_STEP === 'LOADING';
   const COLOR_SELECTED = selectColorStatus(CURRENT_STEP);
-  const firstOriginArePasarela =
-    props?.data?.processHistory?.[0]?.data?.origin?.includes('Pasarela');
-
-  const MAP_BUTTON_SELECTED = props?.data?.processHistory
+  const lastOriginArePasarela = props?.data?.processHistory
     ?.at(-1)
-    ?.label?.includes('TC')
-    ? 'pasarela_check'
-    : firstOriginArePasarela
-    ? (props?.data?.processHistory?.length ?? 0) > 1
-      ? props?.data?.bank === 'Bancolombia'
-        ? 'bancolombia'
-        : 'pasarela'
-      : 'pasarela_check'
-    : 'bancolombia';
+    ?.label?.includes('TC PASARELA');
+
+  // new logic buttons
+  console.log();
+  const BANK: string = props?.data?.bank?.toLowerCase() ?? '';
+  const BUTTONS_MAP_SELECTED = lastOriginArePasarela
+    ? BUTTONS_MAP_CATALOG['pasarela_check']
+    : BUTTONS_MAP_CATALOG[BANK] ?? BUTTONS_MAP_CATALOG['default'];
+
+  const BUTTONS_MAP_CLASSNAME_SELECTED = lastOriginArePasarela
+    ? BUTTONS_MAP_CLASSNAME['pasarela_check']
+    : BUTTONS_MAP_CLASSNAME[BANK] ?? BUTTONS_MAP_CLASSNAME['default'];
 
   return (
     <Dialog open={Boolean(props.openCard)} onOpenChange={handleClose}>
@@ -187,10 +187,8 @@ const ModalDetail = (props: IProps) => {
               </section>
             </div>
 
-            <DialogDescription
-              className={cn(BUTTONS_MAP_CLASSNAME[MAP_BUTTON_SELECTED])}
-            >
-              {BUTTONS_MAP[MAP_BUTTON_SELECTED].map((d) => (
+            <DialogDescription className={cn(BUTTONS_MAP_CLASSNAME_SELECTED)}>
+              {BUTTONS_MAP_SELECTED.map((d: any) => (
                 <Button
                   key={d.label}
                   variant={'secondary'}
@@ -269,7 +267,7 @@ const ModalDetail = (props: IProps) => {
 
 export default ModalDetail;
 
-const BUTTONS_OPTIONS: TypeButtonOptions[] = [
+const BUTTONS_OPTIONS_BANCOLOMBIA: TypeButtonOptions[] = [
   {
     label: '💳 TC',
     option: {
@@ -328,7 +326,7 @@ const BUTTONS_OPTIONS: TypeButtonOptions[] = [
     },
   },
 ];
-const BUTTONS_OPTIONS_PASARELA: TypeButtonOptions[] = [
+const BUTTONS_OPTIONS_DEFAULT: TypeButtonOptions[] = [
   {
     label: '💳 TC',
     option: {
@@ -396,13 +394,13 @@ const BUTTONS_OPTIONS_PASARELA_CHECK: TypeButtonOptions[] = [
   },
 ];
 
-const BUTTONS_MAP = {
-  bancolombia: BUTTONS_OPTIONS,
-  pasarela: BUTTONS_OPTIONS_PASARELA,
+const BUTTONS_MAP_CATALOG: Record<string, any> = {
+  bancolombia: BUTTONS_OPTIONS_BANCOLOMBIA,
+  default: BUTTONS_OPTIONS_DEFAULT,
   pasarela_check: BUTTONS_OPTIONS_PASARELA_CHECK,
 };
-const BUTTONS_MAP_CLASSNAME = {
+const BUTTONS_MAP_CLASSNAME: Record<string, string> = {
   bancolombia: 'grid grid-cols-4 gap-1',
-  pasarela: 'grid grid-cols-3 gap-1',
+  default: 'grid grid-cols-3 gap-1',
   pasarela_check: 'grid grid-cols-3 gap-1',
 };
