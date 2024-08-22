@@ -8,10 +8,4 @@ export const metadata: Metadata = {
 
 export default function Page() {
   redirect('/login');
-  return (
-    <>
-      <h1>Next.js + Serwist</h1>
-      <SendNotification />
-    </>
-  );
 }
