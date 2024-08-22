@@ -1,24 +1,23 @@
 'use client';
+
+import { z } from 'zod';
+import useSWR from 'swr';
 import React from 'react';
-import useTableFetch from './use-table-fetch';
+import { toast } from 'sonner';
+import { useForm } from 'react-hook-form';
+import { supabase } from '@/lib/supabase/client';
+import { usePagination } from './use-pagination';
+import { capitalizeFirstLetter } from '@/lib/utils';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { ColumnsCourierTable } from '@/consts/columns';
+import { INIT_STATE_PAGINATION } from '@/consts/pagination';
+import { customSendSMS, sendMultipleSMS } from '@/lib/courier';
+import { isAvaibleTimeToSendMessage } from '@/lib/utils.columns';
 import {
   getCoreRowModel,
   getSortedRowModel,
   useReactTable,
 } from '@tanstack/react-table';
-import { ColumnsCourierTable } from '@/consts/columns';
-import { isAvaibleTimeToSendMessage } from '@/lib/utils.columns';
-import { z } from 'zod';
-import { toast } from 'sonner';
-import { customSendSMS, sendMultipleSMS } from '@/lib/courier';
-import { capitalizeFirstLetter } from '@/lib/utils';
-import { supabase } from '@/lib/supabase/client';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { INIT_STATE_PAGINATION } from '@/consts/pagination';
-import { usePagination } from './use-pagination';
-import useSWR from 'swr';
-import { fetcherSupabase } from '@/lib/fetcher';
 
 const formSchema = z.object({
   message: z.string().min(2).max(680),
@@ -203,13 +202,12 @@ const sendAllRequests = async (
 
     // multiple
     const phones = dataDouble.map((d) => '57' + d);
-    // await sendMultipleSMS(msg, phones);
-
-    await supabase.from('clients').upsert(
-      markList,
-      //@ts-ignore
-      { onConflict: ['number'] }
-    );
+    await sendMultipleSMS(msg, phones);
+    // await supabase.from('clients').upsert(
+    //   markList,
+    //   //@ts-ignore
+    //   { onConflict: ['number'] }
+    // );
 
     console.log('All requests sent successfully');
   } catch (err) {

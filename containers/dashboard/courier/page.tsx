@@ -137,34 +137,6 @@ const CourierContainer = () => {
                     onSubmit={form.handleSubmit(handleSubmit)}
                     className='space-y-3'
                   >
-                    {/* <FormField
-                      control={form.control}
-                      name='destination'
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Destination</FormLabel>
-                          <Select
-                            onValueChange={field.onChange}
-                            defaultValue={field.value}
-                          >
-                            <FormControl>
-                              <SelectTrigger>
-                                <SelectValue placeholder='Select a destination to register' />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              {DATA_DESTINATION.map((d) => (
-                                <SelectItem value={d.value} key={d.value}>
-                                  {d.label}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    /> */}
                     <FormField
                       control={form.control}
                       name='message'
