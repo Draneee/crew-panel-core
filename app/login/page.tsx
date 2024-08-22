@@ -5,6 +5,7 @@ import { redirect } from 'next/navigation';
 import { SubmitButton } from './submit-button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Separator } from '@/components/ui/separator';
 
 export default async function Login({
   searchParams,
@@ -41,7 +42,23 @@ export default async function Login({
   };
 
   return (
-    <div className='flex flex-col justify-center flex-1 w-full gap-2 px-8 mx-auto sm:max-w-md'>
+    <div className='relative flex flex-col justify-center flex-1 w-full gap-2 px-8 mx-auto sm:max-w-md'>
+      <header className='absolute inset-x-0 flex items-center justify-center gap-2 top-10'>
+        <section>
+          <img
+            className='size-16'
+            src='https://res.cloudinary.com/dnpu9jffh/image/upload/v1722537513/Group_11_oapusr.svg'
+            alt=''
+          />
+        </section>
+        <blockquote className='mt-3 text-2xl italic font-semibold text-center text-white'>
+          <span className='relative inline-block before:block before:absolute before:-inset-0.5 before:-skew-y-6  before:bg-white before:-me-1'>
+            <span className='relative text-3xl text-black'>CREW </span>
+          </span>
+          <br />
+          Core
+        </blockquote>
+      </header>
       <form className='flex flex-col justify-center flex-1 w-full gap-2 animate-in text-foreground'>
         <Label htmlFor='email'>Email</Label>
         <Input
