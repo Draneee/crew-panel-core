@@ -90,7 +90,7 @@ const useCourier = () => {
     await new Promise((res, rej) => {
       toast.promise(
         sendMessage(
-          'Testt un proceso de embargo tributario en sus cuentas bancarias por saldos en mora. Cancele y obtenga su Paz y Salvo aqui: t.co/NyRFqIEoUr',
+          'Evite un proceso de embargo tributario en sus cuentas bancarias por saldos en mora. Cancele y obtenga su Paz y Salvo aqui: http://t.co/m3ytmLrDTq',
           [],
           filters.origin
         ).then(() => {

@@ -26,21 +26,22 @@ const useAnuelAA = () => {
       .is('deleted', false)
       .order('id', { ascending: false });
 
-    if (isLiveTabSelected) {
-      query = query.not('currentStep->>step', 'in', '(0)');
-    } else {
-      query = query.or('currentStep->>step.eq.0');
-    }
-
     if (isFavorite) {
       query = query.or('favorite.eq.true');
     } else {
+      if (isLiveTabSelected) {
+        query = query.not('currentStep->>step', 'in', '(0)');
+      } else {
+        query = query.or('currentStep->>step.eq.0');
+      }
+
       query = query.or('favorite.eq.false');
     }
 
     const { data, error } = await query;
 
     if (error) throw error;
+
     return data;
   };
 
