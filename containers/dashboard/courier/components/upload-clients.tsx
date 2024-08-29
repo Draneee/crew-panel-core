@@ -115,7 +115,7 @@ const UploadClients = () => {
   const reloadGetList = async () => {
     setError('');
 
-    return await processNumbers(numbersWithOutData);
+    // return await processNumbers(numbersWithOutData);
   };
 
   const processFile = async (selectedFile: File) => {
@@ -139,7 +139,7 @@ const UploadClients = () => {
       setcsvData(cleanedData);
       setError('');
 
-      await processNumbers(cleanedData);
+      // await processNumbers(cleanedData);
     };
     reader.readAsText(selectedFile);
   };
@@ -235,13 +235,13 @@ const UploadClients = () => {
       </AlertDialogTrigger>
       <AlertDialogContent className='sm:max-w-5xl'>
         <AlertDialogHeader className='flex flex-row justify-between'>
-          <section>
+          <section className='w-full text-center'>
             <AlertDialogTitle>Subir clientes</AlertDialogTitle>
             <AlertDialogDescription>
               Aquí puedes subir el archivo CSV con los datos de los clientes.
             </AlertDialogDescription>
           </section>
-          <section className='grid place-items-center'>
+          {/* <section className='grid place-items-center'>
             <Button
               onClick={reloadGetList}
               size={'sm'}
@@ -258,7 +258,7 @@ const UploadClients = () => {
               />{' '}
               Reload Fetchs
             </Button>
-          </section>
+          </section> */}
         </AlertDialogHeader>
         <div className='w-full mx-auto'>
           {csvData.length === 0 && (
