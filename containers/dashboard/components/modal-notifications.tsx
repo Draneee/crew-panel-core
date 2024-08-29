@@ -13,8 +13,10 @@ import { createClient } from '@/lib/supabase/client';
 import { Button } from '@/components/ui/button';
 import SendNotification from '@/app/send-notification';
 import { base64ToUint8Array } from '@/lib/utils';
+import { IPropsDashboard } from '../page';
+import { USER_SOURCE } from '@/consts/user-block';
 
-const ModalNotifications = () => {
+const ModalNotifications = (props: IPropsDashboard) => {
   const supabase = createClient();
   const [openModal, setOpenModal] = React.useState(false);
   const [acceptLoading, setAcceptLoading] = React.useState(false);
@@ -76,11 +78,18 @@ const ModalNotifications = () => {
       ),
     });
 
+    const user_source = props.user.email
+      ? USER_SOURCE?.[props.user.email] ?? null
+      : null;
+
+    let body_subscription = {
+      subscription: sub,
+      user_source,
+    };
+
     await supabase
       .from('subscription_notifications')
-      .insert({
-        subscription: sub,
-      })
+      .insert(body_subscription)
       .then((res) => {
         setOpenModal(false);
       });

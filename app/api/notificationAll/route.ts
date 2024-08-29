@@ -9,11 +9,18 @@ interface dataReq {
 }
 
 export const POST = async (req: NextRequest) => {
+  const { subscription, data, user_source } = (await req.json()) as {
+    subscription: webPush.PushSubscription;
+    data: dataReq;
+    user_source: string | null;
+  };
+
   const supabase = createClient();
 
-  const subscriptions = await supabase
-    .from('subscription_notifications')
-    .select();
+  let subscriptions = supabase.from('subscription_notifications').select();
+
+  if (typeof user_source === 'string')
+    subscriptions = subscriptions.eq('user_source', user_source);
 
   if (
     !process.env.NEXT_PUBLIC_WEB_PUSH_PUBLIC_KEY ||
@@ -23,20 +30,15 @@ export const POST = async (req: NextRequest) => {
     throw new Error('Environment variables supplied not sufficient.');
   }
 
-  const { subscription, data } = (await req.json()) as {
-    subscription: webPush.PushSubscription;
-    data: dataReq;
-  };
-
   try {
     webPush.setVapidDetails(
       `mailto:${process.env.WEB_PUSH_EMAIL}`,
       process.env.NEXT_PUBLIC_WEB_PUSH_PUBLIC_KEY,
       process.env.WEB_PUSH_PRIVATE_KEY
     );
-
+    const sub = await subscriptions;
     const results = await Promise.allSettled(
-      subscriptions.data?.map((d) => {
+      sub.data?.map((d) => {
         return webPush.sendNotification(d.subscription, JSON.stringify(data));
       }) || []
     );

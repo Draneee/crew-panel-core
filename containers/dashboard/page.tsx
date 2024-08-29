@@ -9,7 +9,8 @@ import ModalDetail from './components/modal-detail';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Toaster } from 'sonner';
 import TabsDashboard from './components/tabs';
-const ContainerDashboard = (props: IProps) => {
+const ContainerDashboard = (props: IPropsDashboard) => {
+  console.log(props);
   const {
     setOpenCard,
     openCard,
@@ -18,7 +19,7 @@ const ContainerDashboard = (props: IProps) => {
     handleSearch,
     tabSelected,
     setTabSelected,
-  } = useAnuelAA();
+  } = useAnuelAA(props);
   const dataSelected = data.find((d) => d.id === openCard);
   return (
     <div className='relative overflow-auto'>
@@ -47,7 +48,7 @@ const ContainerDashboard = (props: IProps) => {
             </section>
           )}
         </section>
-        <ModalNotifications />
+        <ModalNotifications {...props} />
         <ModalDetail
           {...{
             data: dataSelected,
@@ -64,6 +65,6 @@ const ContainerDashboard = (props: IProps) => {
 
 export default ContainerDashboard;
 
-interface IProps {
+export interface IPropsDashboard {
   user: User;
 }

@@ -9,6 +9,9 @@ import SidebarItemNavigation from './sidebar-item-navigation';
 import { Separator } from '@/components/ui/separator';
 import { DATA_MENU_LINKS, DATA_SIDEBAR_BY_SECTIONS } from '@/lib/const/SIDEBAR';
 import { usePathname } from 'next/navigation';
+import React from 'react';
+import { supabase } from '@/lib/supabase/client';
+import { USER_BLOCK } from '@/consts/user-block';
 
 const MenuLinks = () => {
   const dataSidebarEntry = Object.entries(DATA_SIDEBAR_BY_SECTIONS);
@@ -27,6 +30,15 @@ const MenuLinks = () => {
       return false;
     }
   };
+
+  const [userEmail, setUserEmail] = React.useState<string>();
+
+  React.useEffect(() => {
+    supabase.auth.getUser().then((user) => {
+      setUserEmail(user?.data?.user?.email);
+    });
+  }, []);
+  console.log(userEmail);
   return (
     <section className='space-y-2'>
       <div className='text-xs text-gray-400'>
@@ -35,8 +47,23 @@ const MenuLinks = () => {
       </div>
       <section className='space-y-2'>
         <div>
-          {DATA_MENU_LINKS.map((itm, idx) => {
-            console.log(itm);
+          {DATA_MENU_LINKS.flatMap((itm, idx) => {
+            const haveRestriction = USER_BLOCK[userEmail ?? ''] ? true : false;
+
+            if (haveRestriction) {
+              const { layout } = USER_BLOCK[userEmail ?? ''];
+              if ((layout as { [key: string]: boolean })?.[itm.id]) {
+                return (
+                  <SidebarItemNavigation
+                    key={itm.id}
+                    keyGroup=''
+                    isActive={false}
+                    {...itm}
+                  />
+                );
+              } else return [];
+            }
+
             return (
               <SidebarItemNavigation
                 key={itm.id}
