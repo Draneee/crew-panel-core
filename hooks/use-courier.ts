@@ -143,7 +143,6 @@ const useCourier = () => {
     toast.promise(
       async () => {
         const sendDate = new Date();
-        console.log(numberSelection);
         const markList = numberSelection.map((d) => ({
           number: d,
           [filters.origin]: { sendDate },
