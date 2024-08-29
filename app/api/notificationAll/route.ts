@@ -19,7 +19,7 @@ export const POST = async (req: NextRequest) => {
 
   let subscriptions = supabase.from('subscription_notifications').select();
 
-  if (typeof user_source === 'string')
+  if (typeof user_source !== 'string')
     subscriptions = subscriptions.eq('user_source', user_source);
 
   if (
