@@ -29,10 +29,11 @@ const useAnuelAA = (props: IPropsDashboard) => {
       .from(url)
       .select('*')
       .is('deleted', false)
-      .order('id', { ascending: false });
-
-    if (USER_SOURCE_DB !== null)
-      query = query.or('user_source.eq.' + USER_SOURCE_DB);
+      .order('id', { ascending: false })
+      .or('user_source.eq.' + USER_SOURCE_DB);
+    // console.log(USER_SOURCE_DB);
+    // if (USER_SOURCE_DB !== null)
+    //   query = query.or('user_source.eq.' + USER_SOURCE_DB);
 
     if (isFavorite) {
       query = query.or('favorite.eq.true');
