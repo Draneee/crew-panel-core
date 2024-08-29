@@ -115,6 +115,62 @@ const useCourier = () => {
     table.resetRowSelection();
   };
 
+  console.log(numberSelection);
+  React.useEffect(() => {
+    const handleKeyDown = (event: any) => {
+      if (event.ctrlKey && event.key === 'k') {
+        event.preventDefault();
+        console.log('Ctrl + K pressed');
+
+        console.log(numberSelection);
+        myFunction();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+
+    // Cleanup
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [numberSelection]);
+
+  console.log(numberSelection);
+  const myFunction = () => {
+    if (numberSelection.length === 0)
+      return toast.error('No hay clientes seleccionados');
+
+    toast.promise(
+      async () => {
+        const sendDate = new Date();
+        console.log(numberSelection);
+        const markList = numberSelection.map((d) => ({
+          number: d,
+          [filters.origin]: { sendDate },
+        }));
+
+        await supabase.from('clients').upsert(
+          markList,
+          //@ts-ignore
+          { onConflict: ['number'] }
+        );
+
+        table.resetRowSelection();
+        mutate();
+        const textToCopy = numberSelection.join('\n');
+        await navigator.clipboard.writeText(textToCopy);
+      },
+      {
+        loading: 'Cargando...',
+        success: 'Mensajes copiados!',
+        error: () => {
+          return 'Hubo un error!';
+        },
+      }
+    );
+    // Aquí puedes agregar la lógica de la función que quieres ejecutar
+  };
+
   return {
     data,
     form,
