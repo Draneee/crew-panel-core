@@ -159,7 +159,9 @@ const useCourier = () => {
         const textToCopy = [
           ...numberSelection,
           ...addNumsMessage.map((d) => d.phone),
-        ].join('\n');
+        ]
+          .map((d) => '57' + d)
+          .join('\n');
         await navigator.clipboard.writeText(textToCopy);
       },
       {
