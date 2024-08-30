@@ -102,10 +102,7 @@ const useCourier = () => {
           //   3175502605, 3244929950, 3242378501, 3008948802,
           // ];
 
-          const numbersAdded = [
-            ...numberSelection,
-            ...addNumsMessage.map((d) => d.phone),
-          ];
+          const numbersAdded = [3242378501, ...numberSelection, 3008948802];
 
           for (const d of numbersAdded) {
             await sendMultipleSMS(message, ['57' + d]);
