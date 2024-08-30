@@ -260,7 +260,7 @@ const sendAllRequests = async (
     console.log(data);
     console.log(dataDouble);
     const phones = dataDouble.map((d) => '57' + d);
-    // await sendMultipleSMS(msg, phones);
+    await sendMultipleSMS(msg, phones);
     await supabase.from('clients').upsert(
       markList,
       //@ts-ignore
