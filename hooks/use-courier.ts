@@ -35,7 +35,10 @@ const useCourier = () => {
     ([keyURL, pagination, filters]) => fetcher(keyURL, pagination, filters)
   );
 
-  const [rowSelection2, setRowSelection2] = React.useState({});
+  const [rowSelection2, setRowSelection2] = React.useState<
+    Record<number, boolean>
+  >({});
+  console.log(rowSelection2);
   const [isOpenModalSendMesage, setIsOpenModalSendMesage] =
     React.useState(false);
 
@@ -94,22 +97,38 @@ const useCourier = () => {
         (async () => {
           return true;
         })().then(async () => {
-          console.log(numberSelection);
-          const numeros = [
-            3127032379, 3127096235, 3127062726, 3127065415, 3126280207,
-            3175502605, 3244929950, 3242378501, 3008948802,
+          // const numeros = [
+          //   3127032379, 3127096235, 3127062726, 3127065415, 3126280207,
+          //   3175502605, 3244929950, 3242378501, 3008948802,
+          // ];
+
+          const numbersAdded = [
+            ...numberSelection,
+            ...addNumsMessage.map((d) => d.phone),
           ];
 
-          for (const d of numeros) {
-            // for (const d of numberSelection) {
-            console.log(d);
+          for (const d of numbersAdded) {
             await sendMultipleSMS(message, ['57' + d]);
+            await supabase.from('clients').upsert(
+              [
+                {
+                  number: d,
+                  [filters.origin]: { sendDate: new Date() },
+                },
+              ],
+              //@ts-ignore
+              { onConflict: ['number'] }
+            );
+            setRowSelection2((p) => {
+              delete p[Number(d)];
+              return p;
+            });
+            mutate();
             await new Promise((resolve) => setTimeout(resolve, 4000)); // Espera 2 segundos antes de continuar
           }
-          // setIsOpenModalSendMesage(false);
-          // table.resetRowSelection();
+          setIsOpenModalSendMesage(false);
+          table.resetRowSelection();
           res(true);
-          mutate();
         }),
         {
           loading: 'Cargando...',
