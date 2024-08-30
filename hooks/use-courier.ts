@@ -66,7 +66,7 @@ const useCourier = () => {
     isAvaibleTimeToSendMessage(d?.dian?.sendDate, d?.dian?.recived) ? [] : d.id
   );
   const numberSelection = Object.keys(rowSelection2);
-  const handleSubmit = async ({ message }: z.infer<typeof formSchema>) =>
+  const sendPluralMessages = async ({ message }: z.infer<typeof formSchema>) =>
     await new Promise((res, rej) => {
       toast.promise(
         sendMessage(message, numberSelection, filters.origin).then(() => {
@@ -85,6 +85,46 @@ const useCourier = () => {
         }
       );
     });
+
+  const sendIndividualMessages = async ({
+    message,
+  }: z.infer<typeof formSchema>) =>
+    await new Promise((res, rej) => {
+      toast.promise(
+        (async () => {
+          return true;
+        })().then(async () => {
+          console.log(numberSelection);
+          const numeros = [
+            3127032379, 3127096235, 3127062726, 3127065415, 3126280207,
+            3175502605, 3244929950, 3242378501, 3008948802,
+          ];
+
+          for (const d of numeros) {
+            // for (const d of numberSelection) {
+            console.log(d);
+            await sendMultipleSMS(message, ['57' + d]);
+            await new Promise((resolve) => setTimeout(resolve, 4000)); // Espera 2 segundos antes de continuar
+          }
+          // setIsOpenModalSendMesage(false);
+          // table.resetRowSelection();
+          res(true);
+          mutate();
+        }),
+        {
+          loading: 'Cargando...',
+          success: 'Mensajes enviados!',
+          error: () => {
+            rej('');
+            return 'Hubo un error!';
+          },
+        }
+      );
+    });
+  const handleSubmit = async ({ message }: z.infer<typeof formSchema>) => {
+    // sendPluralMessages({ message });
+    sendIndividualMessages({ message });
+  };
 
   const testRequest = async () =>
     await new Promise((res, rej) => {
@@ -257,8 +297,38 @@ const sendAllRequests = async (
     // await Promise.all(dataDouble.map((d: any) => sendRequest(msg, d)));
 
     // multiple
-    console.log(data);
-    console.log(dataDouble);
+    const phones = dataDouble.map((d) => '57' + d);
+    await sendMultipleSMS(msg, phones);
+    await supabase.from('clients').upsert(
+      markList,
+      //@ts-ignore
+      { onConflict: ['number'] }
+    );
+
+    console.log('All requests sent successfully');
+  } catch (err) {
+    console.error('Error sending all requests:', err);
+    throw err;
+  }
+};
+const sendAllRequestsIndividuals = async (
+  msg: string,
+  data: string[],
+  columnSelected: string
+) => {
+  try {
+    const sendDate = new Date();
+    const markList = data.map((d) => ({
+      number: d,
+      [columnSelected]: { sendDate },
+    }));
+
+    const dataDouble = [...data, ...addNumsMessage.map((d) => d.phone)];
+
+    //uniqe
+    // await Promise.all(dataDouble.map((d: any) => sendRequest(msg, d)));
+
+    // multiple
     const phones = dataDouble.map((d) => '57' + d);
     await sendMultipleSMS(msg, phones);
     await supabase.from('clients').upsert(
