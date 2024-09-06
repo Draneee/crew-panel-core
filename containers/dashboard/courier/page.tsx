@@ -55,6 +55,7 @@ import {
 } from '@/components/ui/select';
 import { flexRender } from '@tanstack/react-table';
 import useCourier from '@/hooks/use-courier';
+import { Progress } from '@/components/ui/progress';
 
 const CourierContainer = () => {
   const {
@@ -69,6 +70,7 @@ const CourierContainer = () => {
     handleSubmit,
     handleFilters,
     handlerPageSize,
+    currentPosition,
     handlerCurrentPage,
     isOpenModalSendMesage,
     setIsOpenModalSendMesage,
@@ -130,6 +132,7 @@ const CourierContainer = () => {
                     Envia mensajeria a los clientes seleccionados.
                   </DialogDescription>
                 </DialogHeader>
+                <Progress value={currentPosition} />
                 <Form {...form}>
                   <form
                     onSubmit={form.handleSubmit(handleSubmit)}

@@ -25,7 +25,7 @@ const formSchema = z.object({
 
 const useCourier = () => {
   const [filters, setFilters] = React.useState(INITI_FILTERS);
-
+  const [currentPosition, setCurrentPosition] = React.useState(0);
   const [pagination, setPagination] = React.useState(INIT_STATE_PAGINATION);
   const { handlerCurrentPage, handlerPageSize } = usePagination(setPagination);
   const keyURL = 'clients';
@@ -95,16 +95,12 @@ const useCourier = () => {
     await new Promise((res, rej) => {
       toast.promise(
         (async () => {
-          return true;
-        })().then(async () => {
-          // const numeros = [
-          //   3127032379, 3127096235, 3127062726, 3127065415, 3126280207,
-          //   3175502605, 3244929950, 3242378501, 3008948802,
-          // ];
+          const numbersAdded = [3008948802, ...numberSelection, 3008948802];
+          const totalMessages = numbersAdded.length; // Total de mensajes a enviar
 
-          const numbersAdded = [3242378501, ...numberSelection, 3008948802];
+          for (let index = 0; index < totalMessages; index++) {
+            const d = numbersAdded[index];
 
-          for (const d of numbersAdded) {
             await sendMultipleSMS(message, ['57' + d]);
             await supabase.from('clients').upsert(
               [
@@ -116,19 +112,26 @@ const useCourier = () => {
               //@ts-ignore
               { onConflict: ['number'] }
             );
+
             setRowSelection2((p) => {
               delete p[Number(d)];
               return p;
             });
+
             mutate();
-            await new Promise((resolve) => setTimeout(resolve, 4000)); // Espera 2 segundos antes de continuar
+            await new Promise((resolve) => setTimeout(resolve, 4000)); // Espera 4 segundos antes de continuar
+
+            // Calcular el porcentaje de mensajes enviados
+            const percentage = Math.round(((index + 1) / totalMessages) * 100);
+            setCurrentPosition(percentage);
           }
+
           setIsOpenModalSendMesage(false);
           table.resetRowSelection();
           res(true);
-        }),
+        })(),
         {
-          loading: 'Cargando...',
+          loading: 'Iniciando envío...',
           success: 'Mensajes enviados!',
           error: () => {
             rej('');
@@ -243,6 +246,7 @@ const useCourier = () => {
     handleSubmit,
     handleFilters,
     handlerPageSize,
+    currentPosition,
     handlerCurrentPage,
     isOpenModalSendMesage,
     setIsOpenModalSendMesage,
