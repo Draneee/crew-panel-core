@@ -34,3 +34,12 @@ const enumToArray = (enumObj: any) => {
 };
 
 export const ARRAY_CATALOG_STEPS = enumToArray(CATALOG_STEPS);
+
+export const CATALOG_USER_NUMBER_BY_EMAIL: Record<string, number> = {
+  'tthemoneyteamm@gmail.com': 3244929950,
+  'jesuscastano101@gmail.com': 3008948802,
+  default: 3242378501,
+};
+// 3008948802
+// 3244929950
+// 3242378501

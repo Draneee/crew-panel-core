@@ -24,7 +24,7 @@ const CourierPage = async () => {
     }
   }
 
-  return <CourierContainer />;
+  return <CourierContainer userEmail={user?.email} />;
 };
 
 export default CourierPage;

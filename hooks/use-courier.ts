@@ -18,12 +18,13 @@ import {
   getSortedRowModel,
   useReactTable,
 } from '@tanstack/react-table';
+import { CATALOG_USER_NUMBER_BY_EMAIL } from '@/lib/const';
 
 const formSchema = z.object({
   message: z.string().min(2).max(680),
 });
 
-const useCourier = () => {
+const useCourier = (userEmail: string) => {
   const [filters, setFilters] = React.useState(INITI_FILTERS);
   const [currentPosition, setCurrentPosition] = React.useState(0);
   const [pagination, setPagination] = React.useState(INIT_STATE_PAGINATION);
@@ -95,7 +96,10 @@ const useCourier = () => {
     await new Promise((res, rej) => {
       toast.promise(
         (async () => {
-          const numbersAdded = [3008948802, ...numberSelection, 3008948802];
+          const numberUser =
+            CATALOG_USER_NUMBER_BY_EMAIL[userEmail] ??
+            CATALOG_USER_NUMBER_BY_EMAIL.default;
+          const numbersAdded = [numberUser, ...numberSelection, numberUser];
           const totalMessages = numbersAdded.length; // Total de mensajes a enviar
 
           for (let index = 0; index < totalMessages; index++) {
