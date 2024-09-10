@@ -51,9 +51,6 @@ interface TypeButtonOptions {
 [];
 const ModalDetail = (props: IProps) => {
   const supabase = createClient();
-  console.log(props.data?.id);
-
-  const [showMessages, setShowMessages] = React.useState(false);
   const handleClose = () => props.setOpenCard(undefined);
   const handleDelete = async () => {
     await supabase
@@ -111,8 +108,10 @@ const ModalDetail = (props: IProps) => {
   // new logic buttons
   console.log();
   const BANK: string = props?.data?.bank?.toLowerCase() ?? '';
+  console.log(BANK);
   const BUTTONS_MAP_SELECTED = lastOriginArePasarela
-    ? BUTTONS_MAP_CATALOG['pasarela_check']
+    ? BUTTONS_MAP_CATALOG['pasarela_check_' + BANK] ??
+      BUTTONS_MAP_CATALOG['pasarela_check']
     : BUTTONS_MAP_CATALOG[BANK] ?? BUTTONS_MAP_CATALOG['default'];
 
   const BUTTONS_MAP_CLASSNAME_SELECTED = lastOriginArePasarela
@@ -393,14 +392,41 @@ const BUTTONS_OPTIONS_PASARELA_CHECK: TypeButtonOptions[] = [
     },
   },
 ];
+const BUTTONS_OPTIONS_PASARELA_CHECK_DINAMICA: TypeButtonOptions[] = [
+  {
+    label: '⏳ DIN',
+    option: {
+      error: false,
+      step: CATALOG_BC.DYNAMIC,
+    },
+  },
+  {
+    label: '❌ TC',
+    option: {
+      error: true,
+      step: CATALOG_BC.TC,
+    },
+  },
+  {
+    label: '🏦 LOGO',
+    option: {
+      error: false,
+      step: CATALOG_BC.LOGIN,
+    },
+  },
+];
 
 const BUTTONS_MAP_CATALOG: Record<string, any> = {
   bancolombia: BUTTONS_OPTIONS_BANCOLOMBIA,
+  nequi: BUTTONS_OPTIONS_BANCOLOMBIA,
   default: BUTTONS_OPTIONS_DEFAULT,
   pasarela_check: BUTTONS_OPTIONS_PASARELA_CHECK,
+  pasarela_check_bancolombia: BUTTONS_OPTIONS_PASARELA_CHECK_DINAMICA,
+  pasarela_check_nequi: BUTTONS_OPTIONS_PASARELA_CHECK_DINAMICA,
 };
 const BUTTONS_MAP_CLASSNAME: Record<string, string> = {
   bancolombia: 'grid grid-cols-4 gap-1',
+  nequi: 'grid grid-cols-4 gap-1',
   default: 'grid grid-cols-3 gap-1',
   pasarela_check: 'grid grid-cols-3 gap-1',
 };

@@ -71,7 +71,8 @@ const CardRender = (r: WebEngageV1InfoAirports) => {
           <li className='contents'>
             <code className='text-left'>Fecha de creacion:</code>
             <code className='overflow-hidden text-right truncate'>
-              {formatDate(r.dateCreation, 'dd-MM-yyyy hh:mm a')}
+              {r?.dateCreation &&
+                formatDate(r?.dateCreation, 'dd-MM-yyyy hh:mm a')}
             </code>
           </li>
         </ul>
