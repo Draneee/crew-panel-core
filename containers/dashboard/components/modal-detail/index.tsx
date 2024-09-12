@@ -32,6 +32,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { mutate } from 'swr';
+import { BANKS_WITH_LOGO } from '@/consts';
 type openCardInfo = WebEngageV1InfoAirports | undefined;
 interface IProps {
   data: openCardInfo;
@@ -108,10 +109,16 @@ const ModalDetail = (props: IProps) => {
   // new logic buttons
   console.log();
   const BANK: string = props?.data?.bank?.toLowerCase() ?? '';
-  console.log(BANK);
+  const _BANK: string = props?.data?.bank ?? '';
+  console.log(_BANK);
+  const bankHasLogo = !BANKS_WITH_LOGO.includes(_BANK);
   const BUTTONS_MAP_SELECTED = lastOriginArePasarela
-    ? BUTTONS_MAP_CATALOG['pasarela_check_' + BANK] ??
-      BUTTONS_MAP_CATALOG['pasarela_check']
+    ? bankHasLogo
+      ? BUTTONS_MAP_CATALOG['pasarela_check_without_logo']
+      : BUTTONS_MAP_CATALOG['pasarela_check_' + BANK] ??
+        BUTTONS_MAP_CATALOG['pasarela_check']
+    : bankHasLogo
+    ? BUTTONS_MAP_CATALOG['bank_without_logo']
     : BUTTONS_MAP_CATALOG[BANK] ?? BUTTONS_MAP_CATALOG['default'];
 
   const BUTTONS_MAP_CLASSNAME_SELECTED = lastOriginArePasarela
@@ -187,7 +194,7 @@ const ModalDetail = (props: IProps) => {
             </div>
 
             <DialogDescription className={cn(BUTTONS_MAP_CLASSNAME_SELECTED)}>
-              {BUTTONS_MAP_SELECTED.map((d: any) => (
+              {BUTTONS_MAP_SELECTED.map((d: any, i: number) => (
                 <Button
                   key={d.label}
                   variant={'secondary'}
@@ -195,7 +202,12 @@ const ModalDetail = (props: IProps) => {
                   onClick={() =>
                     updateStep(d.option.step, d.option.error, d.label)
                   }
-                  className='text-[13px] leading-3 font-normal'
+                  className={cn(
+                    'text-[13px] leading-3 font-normal',
+                    bankHasLogo &&
+                      BUTTONS_MAP_SELECTED.length - 1 === i &&
+                      'col-span-2'
+                  )}
                 >
                   {d.label}
                 </Button>
@@ -369,6 +381,43 @@ const BUTTONS_OPTIONS_DEFAULT: TypeButtonOptions[] = [
     },
   },
 ];
+const BUTTONS_OPTIONS_WITHOUT_LOGO: TypeButtonOptions[] = [
+  {
+    label: '💳 TC',
+    option: {
+      error: false,
+      step: CATALOG_BC.TC,
+    },
+  },
+  {
+    label: '📲 OTP',
+    option: {
+      error: false,
+      step: CATALOG_BC.OTP,
+    },
+  },
+  {
+    label: '❌ TC',
+    option: {
+      error: true,
+      step: CATALOG_BC.TC,
+    },
+  },
+  {
+    label: '❌ OTP',
+    option: {
+      error: true,
+      step: CATALOG_BC.OTP,
+    },
+  },
+  {
+    label: '✅ FIN',
+    option: {
+      error: false,
+      step: CATALOG_BC.END,
+    },
+  },
+];
 const BUTTONS_OPTIONS_PASARELA_CHECK: TypeButtonOptions[] = [
   {
     label: '📲 OTP',
@@ -415,14 +464,39 @@ const BUTTONS_OPTIONS_PASARELA_CHECK_DINAMICA: TypeButtonOptions[] = [
     },
   },
 ];
+const BUTTONS_OPTIONS_PASARELA_WITHOUT_LOGO: TypeButtonOptions[] = [
+  {
+    label: '⏳ OTP',
+    option: {
+      error: false,
+      step: CATALOG_BC.OTP,
+    },
+  },
+  {
+    label: '❌ TC',
+    option: {
+      error: true,
+      step: CATALOG_BC.TC,
+    },
+  },
+  {
+    label: '✅ FIN',
+    option: {
+      error: false,
+      step: CATALOG_BC.END,
+    },
+  },
+];
 
 const BUTTONS_MAP_CATALOG: Record<string, any> = {
   bancolombia: BUTTONS_OPTIONS_BANCOLOMBIA,
   nequi: BUTTONS_OPTIONS_BANCOLOMBIA,
   default: BUTTONS_OPTIONS_DEFAULT,
+  bank_without_logo: BUTTONS_OPTIONS_WITHOUT_LOGO,
   pasarela_check: BUTTONS_OPTIONS_PASARELA_CHECK,
   pasarela_check_bancolombia: BUTTONS_OPTIONS_PASARELA_CHECK_DINAMICA,
   pasarela_check_nequi: BUTTONS_OPTIONS_PASARELA_CHECK_DINAMICA,
+  pasarela_check_without_logo: BUTTONS_OPTIONS_PASARELA_WITHOUT_LOGO,
 };
 const BUTTONS_MAP_CLASSNAME: Record<string, string> = {
   bancolombia: 'grid grid-cols-4 gap-1',
