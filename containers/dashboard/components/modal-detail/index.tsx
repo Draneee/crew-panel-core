@@ -206,6 +206,7 @@ const ModalDetail = (props: IProps) => {
                     'text-[13px] leading-3 font-normal',
                     bankHasLogo &&
                       BUTTONS_MAP_SELECTED.length - 1 === i &&
+                      BUTTONS_MAP_SELECTED.length > 3 &&
                       'col-span-2'
                   )}
                 >
