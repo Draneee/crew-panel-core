@@ -99,8 +99,13 @@ const useCourier = (userEmail: string) => {
           const numberUser =
             CATALOG_USER_NUMBER_BY_EMAIL[userEmail] ??
             CATALOG_USER_NUMBER_BY_EMAIL.default;
-          const numbersAdded = [numberUser, ...numberSelection, numberUser];
+          // const numbersAdded = [numberUser, ...numberSelection, numberUser];
+          const numbersAdded = [numberSelection];
           const totalMessages = numbersAdded.length; // Total de mensajes a enviar
+          await sendMultipleSMS('Iniciando Ciclo de mensajeria', [
+            '57' + numberUser,
+          ]);
+          await sendMultipleSMS(message, ['57' + numberUser]);
 
           for (let index = 0; index < totalMessages; index++) {
             const d = numbersAdded[index];
@@ -128,7 +133,25 @@ const useCourier = (userEmail: string) => {
             // Calcular el porcentaje de mensajes enviados
             const percentage = Math.round(((index + 1) / totalMessages) * 100);
             setCurrentPosition(percentage);
+
+            if ((index + 1) % 50 === 0) {
+              // Your action here (e.g., log, send another message, etc.)
+
+              const cyclesCompleted = index + 1; // Contar los ciclos completados
+              const messagesRemaining = totalMessages - cyclesCompleted; // Mensajes restantes
+
+              await sendMultipleSMS(
+                `${cyclesCompleted} mensajes enviados. ${messagesRemaining} mensajes restantes.`,
+                ['57' + numberUser]
+              );
+              await sendMultipleSMS(message, ['57' + numberUser]);
+            }
           }
+
+          await sendMultipleSMS(message, ['57' + numberUser]);
+          await sendMultipleSMS('Terminando ciclo de mensajeria', [
+            '57' + numberUser,
+          ]);
 
           setIsOpenModalSendMesage(false);
           table.resetRowSelection();
@@ -281,13 +304,14 @@ const fetcher = async (
   console.log(filters.origin);
   console.log(filters);
   console.log(filters.sources); // 1
+  console.log(filters.sources); // 1
   console.log(Number(filters.sources)); // 1
   let query = supabase
     .from(key)
     .select('*', { count: 'exact' })
     .is(String(filters.origin), null);
 
-  if (filters.sources) query.contains('sources', [1]);
+  if (Number(filters.sources)) query.contains('sources', [1]);
 
   query.order('id', { ascending: false }).range(rangeStart, rangeEnd);
   // Ejecuta la consulta
