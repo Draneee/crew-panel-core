@@ -1,22 +1,10 @@
 import { useAppShell } from '@/components/layout/AppShell';
 import { Button } from '@/components/ui/button';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '@/components/ui/dialog';
 import React from 'react';
 import {
   AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
-  AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
@@ -27,26 +15,22 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { capitalizeFirstLetter, cn } from '@/lib/utils';
+import {
+  capitalizeFirstLetter,
+  capitalizeFirstLetterAndMinify,
+  cn,
+} from '@/lib/utils';
 
 import { supabase } from '@/lib/supabase/client';
 import { toast } from 'sonner';
 import { API_URL_CHECK_NUMBER } from '@/lib/const';
-import { IconProps } from '@radix-ui/react-icons/dist/types';
 
-import {
-  EllipsisVertical,
-  Pencil,
-  RefreshCwIcon,
-  TrashIcon,
-  UploadIcon,
-} from 'lucide-react';
+import { EllipsisVertical, Pencil, TrashIcon, UploadIcon } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
 import DataTable from '@/components/mask-ui/data-table';
+import { CATALOG_SOURCE_NUMBERS } from '@/consts';
 
 interface InformationUser {
   name_source: string;
@@ -62,7 +46,7 @@ const UploadClients = () => {
     if (!isSidebarCollapsed) toggleSidebar();
   };
 
-  const [loadingReload, setLoadingReload] = React.useState(false);
+  // const [loadingReload, setLoadingReload] = React.useState(false);
   const [csvData, setcsvData] = React.useState<InformationUser[]>([]);
   const [error, setError] = React.useState('');
   const [numberFounded, setNumberFounded] = React.useState({});
@@ -73,50 +57,50 @@ const UploadClients = () => {
   const numbersWithKey = Object.entries(numberFounded).flatMap(([k, v]) =>
     v ? k : []
   );
-  const numbersWithOutData = csvData.flatMap((d) =>
-    numbersWithKey.includes(d.number) ? [] : d
-  );
-  const areRowsButWithOutFetchs =
-    numbersWithKey.length === 0 && numbersWithOutData.length > 0;
+  // const numbersWithOutData = csvData.flatMap((d) =>
+  //   numbersWithKey.includes(d.number) ? [] : d
+  // );
+  // const areRowsButWithOutFetchs =
+  //   numbersWithKey.length === 0 && numbersWithOutData.length > 0;
 
-  const processNumbers = async (
-    numbers: { number: string; name_source: string }[]
-  ) => {
-    setLoadingReload(true);
-    const failedRequests: any[] = [];
-    for (const d of numbers) {
-      try {
-        const res = await numberRequest(d);
-        setNumberFounded((p) => ({ ...p, [d.number]: res }));
-        console.log(res);
-      } catch (err) {
-        console.log(`Request failed for number: ${d.number}`);
-        failedRequests.push(d);
-      }
-    }
-    for (const d of failedRequests) {
-      try {
-        const res = await numberRequest(d);
-        setNumberFounded((p) => ({ ...p, [d.number]: res }));
-        console.log(res);
-      } catch (err) {
-        console.log(`Retry failed for number: ${d.number}`);
-      }
-    }
-    setLoadingReload(false);
+  // const processNumbers = async (
+  //   numbers: { number: string; name_source: string }[]
+  // ) => {
+  //   setLoadingReload(true);
+  //   const failedRequests: any[] = [];
+  //   for (const d of numbers) {
+  //     try {
+  //       const res = await numberRequest(d);
+  //       setNumberFounded((p) => ({ ...p, [d.number]: res }));
+  //       console.log(res);
+  //     } catch (err) {
+  //       console.log(`Request failed for number: ${d.number}`);
+  //       failedRequests.push(d);
+  //     }
+  //   }
+  //   for (const d of failedRequests) {
+  //     try {
+  //       const res = await numberRequest(d);
+  //       setNumberFounded((p) => ({ ...p, [d.number]: res }));
+  //       console.log(res);
+  //     } catch (err) {
+  //       console.log(`Retry failed for number: ${d.number}`);
+  //     }
+  //   }
+  //   setLoadingReload(false);
 
-    if (failedRequests.length > 0) {
-      setError(errorFetch);
-    } else {
-      setError('');
-    }
-  };
+  //   if (failedRequests.length > 0) {
+  //     setError(errorFetch);
+  //   } else {
+  //     setError('');
+  //   }
+  // };
 
-  const reloadGetList = async () => {
-    setError('');
+  // const reloadGetList = async () => {
+  //   setError('');
 
-    // return await processNumbers(numbersWithOutData);
-  };
+  //   // return await processNumbers(numbersWithOutData);
+  // };
 
   const processFile = async (selectedFile: File) => {
     if (!selectedFile) {
@@ -130,10 +114,10 @@ const UploadClients = () => {
     reader.onload = async () => {
       const data = reader.result as any;
       const rows = data.trim().split('\n');
-      const dataRows = rows.slice(1).map((row: any) => row.split(','));
+      const dataRows = rows.slice(1).map((row: any) => row.split(';'));
 
       const cleanedData = dataRows.map(([name_source, number]: any) => ({
-        name_source: capitalizeFirstLetter(name_source),
+        name_selected: capitalizeFirstLetterAndMinify(name_source),
         number: String(number).replace(/\r/g, ''),
       }));
       setcsvData(cleanedData);
@@ -154,30 +138,30 @@ const UploadClients = () => {
     processFile(selectedFile);
   };
 
-  const numberRequest = async ({
-    number,
-    name_source,
-  }: {
-    number: string;
-    name_source: string;
-  }) => {
-    console.log(number);
-    console.log(name_source);
-    return await fetch(`${API_URL_CHECK_NUMBER}/gtc/find/57${number}`, {
-      method: 'GET',
-    })
-      .then(async (res) => {
-        const data = await res.json();
-        if (data.name.toLowerCase() === name_source.toLowerCase())
-          handleNumberSelection(number, data.name);
-        return data.name;
-      })
-      .catch((err) => {
-        console.log(err);
-        throw err;
-      });
-  };
-
+  // const numberRequest = async ({
+  //   number,
+  //   name_source,
+  // }: {
+  //   number: string;
+  //   name_source: string;
+  // }) => {
+  //   console.log(number);
+  //   console.log(name_source);
+  //   return await fetch(`${API_URL_CHECK_NUMBER}/gtc/find/57${number}`, {
+  //     method: 'GET',
+  //   })
+  //     .then(async (res) => {
+  //       const data = await res.json();
+  //       if (data.name.toLowerCase() === name_source.toLowerCase())
+  //         handleNumberSelection(number, data.name);
+  //       return data.name;
+  //     })
+  //     .catch((err) => {
+  //       console.log(err);
+  //       throw err;
+  //     });
+  // };
+  console.log(csvData);
   const uploadClients = async (data: any) =>
     await supabase.from('clients').insert(data);
 
@@ -186,7 +170,12 @@ const UploadClients = () => {
   const handleUpClients = () => {
     setLoading(true);
     toast.promise(
-      uploadClients(fnDataToRequest(csvData, numberSelected))
+      uploadClients(
+        csvData.map((d) => ({
+          ...d,
+          sources: [CATALOG_SOURCE_NUMBERS['Bath and Body Works']],
+        }))
+      )
         .then((res) => {
           console.log(res);
           if (res.error) {
@@ -372,28 +361,28 @@ const ColumnsCSVTable = (
       return <div>{row.original?.number}</div>;
     },
   },
-  {
-    accessorKey: 'name_source',
-    header: () => 'Nombre Final',
-    cell: ({ row }: any) => {
-      const number = row.original?.number;
-      return (
-        <div>
-          <span
-            className='cursor-pointer'
-            onClick={() => handleNumberSelection(number, '')}
-          >
-            {numberSelected?.[number] ?? ''}
-          </span>
-        </div>
-      );
-    },
-  },
+  // {
+  //   accessorKey: 'name_source',
+  //   header: () => 'Nombre Final',
+  //   cell: ({ row }: any) => {
+  //     const number = row.original?.number;
+  //     return (
+  //       <div>
+  //         <span
+  //           className='cursor-pointer'
+  //           onClick={() => handleNumberSelection(number, '')}
+  //         >
+  //           {numberSelected?.[number] ?? ''}
+  //         </span>
+  //       </div>
+  //     );
+  //   },
+  // },
   {
     accessorKey: 'name_source',
     header: () => 'Nombre Origen',
     cell: ({ row }: any) => {
-      const nameSource = row.original?.name_source;
+      const nameSource = row.original?.name_selected;
       return (
         <div>
           <span
@@ -408,25 +397,25 @@ const ColumnsCSVTable = (
       );
     },
   },
-  {
-    accessorKey: 'name_source',
-    header: () => 'Nombre Consulta',
-    cell: ({ row }: any) => {
-      const nameSelected = numberFounded?.[row.original?.number];
-      return (
-        <div>
-          <span
-            className='cursor-pointer'
-            onClick={() =>
-              handleNumberSelection(row.original?.number, nameSelected ?? '')
-            }
-          >
-            {nameSelected ?? 'Loading...'}
-          </span>
-        </div>
-      );
-    },
-  },
+  // {
+  //   accessorKey: 'name_source',
+  //   header: () => 'Nombre Consulta',
+  //   cell: ({ row }: any) => {
+  //     const nameSelected = numberFounded?.[row.original?.number];
+  //     return (
+  //       <div>
+  //         <span
+  //           className='cursor-pointer'
+  //           onClick={() =>
+  //             handleNumberSelection(row.original?.number, nameSelected ?? '')
+  //           }
+  //         >
+  //           {nameSelected ?? 'Loading...'}
+  //         </span>
+  //       </div>
+  //     );
+  //   },
+  // },
   {
     accessorKey: 'actions',
     header: () => '',
@@ -461,4 +450,10 @@ const fnDataToRequest = (
   data.map(({ number }) => ({
     number,
     name_selected: numberSelected?.[number] ?? null,
+  }));
+
+const parseCsvToRequest = (data: any) =>
+  data.map(({ number, name_source }: any) => ({
+    number,
+    name,
   }));

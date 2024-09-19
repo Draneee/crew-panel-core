@@ -124,7 +124,6 @@ const ModalDetail = (props: IProps) => {
   const BUTTONS_MAP_CLASSNAME_SELECTED = lastOriginArePasarela
     ? BUTTONS_MAP_CLASSNAME['pasarela_check']
     : BUTTONS_MAP_CLASSNAME[BANK] ?? BUTTONS_MAP_CLASSNAME['default'];
-
   return (
     <Dialog open={Boolean(props.openCard)} onOpenChange={handleClose}>
       <DialogContent className='max-w-2xl overflow-auto border-none rounded-none h-dvh'>

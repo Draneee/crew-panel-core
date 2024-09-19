@@ -56,6 +56,7 @@ import {
 import { flexRender } from '@tanstack/react-table';
 import useCourier from '@/hooks/use-courier';
 import { Progress } from '@/components/ui/progress';
+import { CATALOG_SOURCE_NUMBERS } from '@/consts';
 
 const CourierContainer = ({ userEmail = '' }) => {
   console.log(userEmail);
@@ -79,6 +80,8 @@ const CourierContainer = ({ userEmail = '' }) => {
 
   const lengthSelection = Object.keys(table.getState().rowSelection).length;
   console.log(data?.meta);
+  console.log(false && false);
+
   return (
     <section className='flex flex-col flex-1 w-full max-w-5xl p-4 mx-auto space-y-4 overflow-auto'>
       <section className='flex justify-between gap-2 max-sm:flex-col max-sm:items-center'>
@@ -91,6 +94,29 @@ const CourierContainer = ({ userEmail = '' }) => {
           </section>
         </section>
         <section className='flex gap-2 max-sm:flex-col'>
+          <Select
+            defaultValue={filters.sources}
+            onValueChange={(e) => handleFilters('sources', e)}
+          >
+            <SelectTrigger className='w-[180px] h-8 max-sm:mx-auto text-xs'>
+              <SelectValue placeholder='Selecciona un origen' />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                {Object.entries(CATALOG_SOURCE_NUMBERS).map(
+                  ([label, value]) => (
+                    <SelectItem
+                      key={value}
+                      value={String(value)}
+                      className='text-xs'
+                    >
+                      {label}
+                    </SelectItem>
+                  )
+                )}
+              </SelectGroup>
+            </SelectContent>
+          </Select>
           <Select
             defaultValue={filters.origin}
             onValueChange={(e) => handleFilters('origin', e)}
@@ -263,6 +289,10 @@ const CourierContainer = ({ userEmail = '' }) => {
 export default CourierContainer;
 
 const DATA_DESTINATION = [
+  {
+    value: 'bath',
+    label: 'Bath and Body Works',
+  },
   {
     value: 'test',
     label: 'Test',

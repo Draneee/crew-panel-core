@@ -267,6 +267,7 @@ const fetcher = async (
   },
   filters: {
     origin: string;
+    sources: string;
   }
 ) => {
   // Desestructura limit y skip
@@ -278,12 +279,17 @@ const fetcher = async (
 
   // Construye la consulta con el rango definido
   console.log(filters.origin);
+  console.log(filters);
+  console.log(filters.sources); // 1
+  console.log(Number(filters.sources)); // 1
   let query = supabase
     .from(key)
     .select('*', { count: 'exact' })
-    .is(String(filters.origin), null)
-    .order('id', { ascending: false })
-    .range(rangeStart, rangeEnd);
+    .is(String(filters.origin), null);
+
+  if (filters.sources) query.contains('sources', [1]);
+
+  query.order('id', { ascending: false }).range(rangeStart, rangeEnd);
   // Ejecuta la consulta
   const { data, error, count: total } = await query;
 
@@ -295,6 +301,7 @@ const fetcher = async (
 
 const INITI_FILTERS = {
   origin: 'test',
+  sources: '',
 };
 
 const validateAreAvaible = (row: any) => !row.original.dian?.sendDate;

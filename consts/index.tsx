@@ -8,3 +8,6 @@ export const BANKS_WITH_LOGO = [
   'Scotiabank Colpatria',
   'Banco de Bogotá',
 ];
+export const CATALOG_SOURCE_NUMBERS = {
+  'Bath and Body Works': 1,
+};
