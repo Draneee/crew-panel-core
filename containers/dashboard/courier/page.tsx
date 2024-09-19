@@ -96,7 +96,13 @@ const CourierContainer = ({ userEmail = '' }) => {
         <section className='flex gap-2 max-sm:flex-col'>
           <Select
             defaultValue={filters.sources}
-            onValueChange={(e) => handleFilters('sources', e)}
+            onValueChange={(e) => {
+              console.log(e);
+              if (e === '1') {
+                handleFilters('origin', 'bath');
+              }
+              handleFilters('sources', e);
+            }}
           >
             <SelectTrigger className='w-[180px] h-8 max-sm:mx-auto text-xs'>
               <SelectValue placeholder='Selecciona un origen' />
@@ -118,7 +124,7 @@ const CourierContainer = ({ userEmail = '' }) => {
             </SelectContent>
           </Select>
           <Select
-            defaultValue={filters.origin}
+            value={filters.origin}
             onValueChange={(e) => handleFilters('origin', e)}
           >
             <SelectTrigger className='w-[180px] h-8 max-sm:mx-auto text-xs'>

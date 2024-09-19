@@ -172,10 +172,13 @@ const UploadClients = () => {
   const [loading, setLoading] = React.useState(false);
   console.log(loading);
   const handleUpClients = () => {
+    const uniqueCsvData = Array.from(
+      new Map(csvData.map((item) => [item.number, item])).values()
+    );
     setLoading(true);
     toast.promise(
       uploadClients(
-        csvData.map((d) => ({
+        uniqueCsvData.map((d) => ({
           ...d,
           sources: [CATALOG_SOURCE_NUMBERS['Bath and Body Works']],
         }))
