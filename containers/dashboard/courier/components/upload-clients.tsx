@@ -163,7 +163,11 @@ const UploadClients = () => {
   // };
   console.log(csvData);
   const uploadClients = async (data: any) =>
-    await supabase.from('clients').insert(data);
+    await supabase
+      .from('clients')
+      //@ts-ignore
+      .upsert(data, { onConflict: ['number'] }) // Use UPSERT, conflict on 'number'
+      .select();
 
   const [loading, setLoading] = React.useState(false);
   console.log(loading);
@@ -191,7 +195,7 @@ const UploadClients = () => {
           if (err.code === '23505') {
             const numberMatch = err.details.match(/\((\d+)\)/)[1];
             console.log(numberMatch);
-            throw `El numero ${numberMatch} esta repetido!`;
+            throw `El número ${numberMatch} está repetido!`;
           }
           throw err?.message;
         }),
