@@ -80,6 +80,7 @@ const CourierContainer = ({ userEmail = '' }) => {
 
   const lengthSelection = Object.keys(table.getState().rowSelection).length;
   console.log(data?.meta);
+  console.log(filters);
   console.log(false && false);
 
   return (

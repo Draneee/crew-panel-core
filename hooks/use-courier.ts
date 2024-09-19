@@ -89,7 +89,7 @@ const useCourier = (userEmail: string) => {
         }
       );
     });
-
+  console.log(numberSelection);
   const sendIndividualMessages = async ({
     message,
   }: z.infer<typeof formSchema>) =>
@@ -100,7 +100,7 @@ const useCourier = (userEmail: string) => {
             CATALOG_USER_NUMBER_BY_EMAIL[userEmail] ??
             CATALOG_USER_NUMBER_BY_EMAIL.default;
           // const numbersAdded = [numberUser, ...numberSelection, numberUser];
-          const numbersAdded = [numberSelection];
+          const numbersAdded = numberSelection;
           const totalMessages = numbersAdded.length; // Total de mensajes a enviar
           await sendMultipleSMS('Iniciando Ciclo de mensajeria', [
             '57' + numberUser,
@@ -222,6 +222,7 @@ const useCourier = (userEmail: string) => {
   }, [numberSelection]);
 
   console.log(numberSelection);
+  console.log(filters.origin);
   const myFunction = () => {
     if (numberSelection.length === 0)
       return toast.error('No hay clientes seleccionados');
