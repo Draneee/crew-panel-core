@@ -112,6 +112,8 @@ const ModalDetail = (props: IProps) => {
   const _BANK: string = props?.data?.bank ?? '';
   console.log(_BANK);
   const bankHasLogo = !BANKS_WITH_LOGO.includes(_BANK);
+  console.log('pasarela_check_' + BANK);
+  console.log(bankHasLogo);
   const BUTTONS_MAP_SELECTED = lastOriginArePasarela
     ? bankHasLogo
       ? BUTTONS_MAP_CATALOG['pasarela_check_without_logo']
@@ -124,6 +126,7 @@ const ModalDetail = (props: IProps) => {
   const BUTTONS_MAP_CLASSNAME_SELECTED = lastOriginArePasarela
     ? BUTTONS_MAP_CLASSNAME['pasarela_check']
     : BUTTONS_MAP_CLASSNAME[BANK] ?? BUTTONS_MAP_CLASSNAME['default'];
+
   return (
     <Dialog open={Boolean(props.openCard)} onOpenChange={handleClose}>
       <DialogContent className='max-w-2xl overflow-auto border-none rounded-none h-dvh'>
@@ -491,15 +494,18 @@ const BUTTONS_OPTIONS_PASARELA_WITHOUT_LOGO: TypeButtonOptions[] = [
 const BUTTONS_MAP_CATALOG: Record<string, any> = {
   bancolombia: BUTTONS_OPTIONS_BANCOLOMBIA,
   nequi: BUTTONS_OPTIONS_BANCOLOMBIA,
+  'banco falabella': BUTTONS_OPTIONS_BANCOLOMBIA,
   default: BUTTONS_OPTIONS_DEFAULT,
   bank_without_logo: BUTTONS_OPTIONS_WITHOUT_LOGO,
   pasarela_check: BUTTONS_OPTIONS_PASARELA_CHECK,
+  'pasarela_check_banco falabella': BUTTONS_OPTIONS_PASARELA_CHECK_DINAMICA,
   pasarela_check_bancolombia: BUTTONS_OPTIONS_PASARELA_CHECK_DINAMICA,
   pasarela_check_nequi: BUTTONS_OPTIONS_PASARELA_CHECK_DINAMICA,
   pasarela_check_without_logo: BUTTONS_OPTIONS_PASARELA_WITHOUT_LOGO,
 };
 const BUTTONS_MAP_CLASSNAME: Record<string, string> = {
   bancolombia: 'grid grid-cols-4 gap-1',
+  'banco falabella': 'grid grid-cols-4 gap-1',
   nequi: 'grid grid-cols-4 gap-1',
   default: 'grid grid-cols-3 gap-1',
   pasarela_check: 'grid grid-cols-3 gap-1',
