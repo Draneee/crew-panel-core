@@ -128,7 +128,7 @@ const useCourier = (userEmail: string) => {
             });
 
             mutate();
-            await new Promise((resolve) => setTimeout(resolve, 1000)); // Espera 4 segundos antes de continuar
+            await new Promise((resolve) => setTimeout(resolve, 3000)); // Espera 4 segundos antes de continuar
 
             // Calcular el porcentaje de mensajes enviados
             const percentage = Math.round(((index + 1) / totalMessages) * 100);
